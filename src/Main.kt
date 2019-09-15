@@ -18,6 +18,6 @@ fun main() {
     val res = library.extendedEuclidean(a, b)
     println("a = $a, b = $b, d = ${res.d}, x = ${res.x}, y = ${res.y}")
 
-    val x = library.babyStepGiantStep(2uL, 23uL, 9uL, 6uL, 4uL)
+    val x = library.babyStepGiantStep(2uL, 23uL, 9uL, 6uL)
     println("x = $x")
 }

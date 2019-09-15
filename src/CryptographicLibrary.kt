@@ -1,4 +1,3 @@
-import java.lang.IllegalStateException
 import kotlin.random.Random
 import kotlin.random.nextULong
 
@@ -41,7 +40,7 @@ class CryptographicLibrary {
         return res
     }
 
-    /** Тест Ферма на простоту числа */
+    /** Тест Ферма на простоту числа. O((log n)^2 × log log n × log log log n) */
     fun ferma(x: ULong): Boolean {
         if (x == 2uL) return true
         for (i in 0..100) {
@@ -64,10 +63,13 @@ class CryptographicLibrary {
      * @param g простое число
      * @param xa закрытый ключ абонента A
      * @param xb закрытый ключ абонента B
+     *
+     * @return секретный общий ключ
      */
-    fun hellman(p: ULong, g: ULong, xa: ULong, xb: ULong) {
-        val q = (p - 1uL) / 2uL
-        check(ferma(p) && ferma(q)) { "По алгоритму Ферма числа p = $p и q = $q должны быть простыми!" }
+    fun hellman(p: ULong, g: ULong, xa: ULong, xb: ULong): ULong {
+        //val q = (p - 1uL) / 2uL
+        //check(ferma(q)) { "По алгоритму Ферма число q = $q должно быть простым!" }
+        if(!ferma(p)) println("По алгоритму Ферма число p = $p должно быть простым!")
         check(g in 1uL..p-1uL) { "Нарушено условие '1 < g < p'! [g = $g, p = $p]" }
         val ya = pows(g, xa, p)
         val yb = pows(g, xb, p)
@@ -75,15 +77,16 @@ class CryptographicLibrary {
         val zba = pows(ya, xb, p)
         check(zab == zba) { "У Алисы и Боба разные секретные ключи! Zab = $zab и Zba = $zba" }
         println("Алиса и Боб получили общий секретный ключ! K = $zab, Ya = $ya, Yb = $yb")
+        return zab
     }
 
     /**
      * Алгоритм Гельфонда — Шенкса (Шаг младенца - шаг великана)
      * Нахождение степени x числа [a] по модулю [p] равное числу [y]
      */
-    fun babyStepGiantStep(a: ULong, p: ULong, y: ULong, m: ULong, k: ULong): ULong {
+    fun babyStepGiantStep(a: ULong, p: ULong, y: ULong, m: ULong): ULong {
         check(y < p) { "Нарушено условие 'y < p'! [y = $y, p = $p]" }
-        check(m * k > p) { "Нарушено условие 'm * k > p'! [m = $m, k = $k, p = $p]" }
+        check(m * m > p) { "Нарушено условие 'm * k > p'! [m = $m, p = $p]" }
         val jList = mutableMapOf<ULong, ULong>()
         for (j in 0uL..(m - 1uL)) {
             val ai = pows(a, j, p, y)
