@@ -1,6 +1,5 @@
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @ExperimentalUnsignedTypes
 class CryptographicLibraryTest {
@@ -89,37 +88,6 @@ class CryptographicLibraryTest {
         assertEquals(x, 15uL)
     }
 
-    // Ferma -----------------------------------
-
-    @Test
-    @Throws(Exception::class)
-    fun `Ferma of small numbers №1`() {
-        val x = library.ferma(17uL)
-        assertTrue(x)
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun `Ferma of small numbers №2`() {
-        val x = library.ferma(199uL)
-        assertTrue(x)
-    }
-
-
-    @Test
-    @Throws(Exception::class)
-    fun `Ferma of small numbers №3`() {
-        val x = library.ferma(3571uL)
-        assertTrue(x)
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun `Ferma of small numbers №4`() {
-        val x = library.ferma(115249uL)
-        assertTrue(x)
-    }
-
     // Extended Euclidean ----------------------------
 
     @Test
@@ -187,7 +155,7 @@ class CryptographicLibraryTest {
     @Test
     @Throws(Exception::class)
     fun `Baby step - Giant step of small numbers №1`() {
-        val k = library.babyStepGiantStep(11uL, 7uL, 6uL, 5uL)
-        assertEquals(k, 15uL)
+        val k = library.babyStepGiantStep(2uL, 23uL, 9uL, 6uL)
+        assertEquals(k, 5uL)
     }
 }

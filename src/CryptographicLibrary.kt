@@ -1,16 +1,36 @@
-import kotlin.random.Random
-import kotlin.random.nextULong
+import kotlin.math.pow
+
 
 @ExperimentalUnsignedTypes
 class CryptographicLibrary {
 
-    /** Функция быстрого возведения числа [a] в степень [b] c множетелем [x] по модулю [m] */
-    fun pows(a: ULong, b: ULong, m: ULong, x: ULong = 1uL): ULong {
-        if (b == 0uL) return 1uL
-        val t = pows(a, b / 2uL, m)
-        val t1 = if (b.isEven())
-            t else (a * t)
-        return (t1 * t * x) % m
+    /** Функция быстрого возведения числа [a1] в степень [b1] по модулю [m] */
+    fun pows(a1: ULong, b1: ULong, m: ULong): ULong {
+        var a: ULong = a1
+        var b: ULong = b1
+        var res = 1uL
+        a = a % m
+        while (b > 0uL) {
+            if (b and 1uL == 1uL)
+                res = res * a % m
+            b = b shr 1
+            a = a * a % m
+        }
+        return res
+    }
+
+    /** Функция быстрого возведения числа [a1] в степень [b1] c множетелем [x] по модулю [m] */
+    private fun pows(a1: ULong, b1: ULong, m: ULong, x: ULong): ULong {
+        return (pows(a1, b1, m) * x % m) % m
+    }
+
+    fun isPrime(p: Int): Boolean {
+        if(p <= 1) return false
+        val b = p.toDouble().pow(0.5).toInt()
+        for (i in 2..b) {
+            if (p % i == 0) return false
+        }
+        return true
     }
 
     /** Алгоритм Евклида нахождения НОД двух чисел*/
@@ -40,22 +60,6 @@ class CryptographicLibrary {
         return res
     }
 
-    /** Тест Ферма на простоту числа. O((log n)^2 × log log n × log log log n) */
-    fun ferma(x: ULong): Boolean {
-        if (x == 2uL) return true
-        for (i in 0..100) {
-            val a = (Random.nextULong() % (x - 2uL)) + 2uL
-            when {
-                euclidean(a, x) != 1uL -> return false
-                pows(a, x - 1uL, x) != 1uL -> return false
-            }
-        }
-        return true
-    }
-
-    /** Проверка на четность числа */
-    private fun ULong.isEven() = (this % 2uL == 0uL)
-
     /**
      * Функция построения общего ключа для двух абонентов и по схеме Диффи-Хеллмана
      *
@@ -67,16 +71,16 @@ class CryptographicLibrary {
      * @return секретный общий ключ
      */
     fun hellman(p: ULong, g: ULong, xa: ULong, xb: ULong): ULong {
-        //val q = (p - 1uL) / 2uL
-        //check(ferma(q)) { "По алгоритму Ферма число q = $q должно быть простым!" }
-        if(!ferma(p)) println("По алгоритму Ферма число p = $p должно быть простым!")
+        val q = (p - 1uL) / 2uL
+        check(isPrime(q.toInt())) { "По алгоритму Ферма число q = $q должно быть простым!" }
+        if(!isPrime(p.toInt())) println("По алгоритму Ферма число p = $p должно быть простым!")
         check(g in 1uL..p-1uL) { "Нарушено условие '1 < g < p'! [g = $g, p = $p]" }
         val ya = pows(g, xa, p)
         val yb = pows(g, xb, p)
+        println("Ya = $ya, Yb = $yb")
         val zab = pows(yb, xa, p)
         val zba = pows(ya, xb, p)
         check(zab == zba) { "У Алисы и Боба разные секретные ключи! Zab = $zab и Zba = $zba" }
-        println("Алиса и Боб получили общий секретный ключ! K = $zab, Ya = $ya, Yb = $yb")
         return zab
     }
 
@@ -87,16 +91,19 @@ class CryptographicLibrary {
     fun babyStepGiantStep(a: ULong, p: ULong, y: ULong, m: ULong): ULong {
         check(y < p) { "Нарушено условие 'y < p'! [y = $y, p = $p]" }
         check(m * m > p) { "Нарушено условие 'm * k > p'! [m = $m, p = $p]" }
-        val jList = mutableMapOf<ULong, ULong>()
+        val jMap = mutableMapOf<ULong, ULong>()
         for (j in 0uL..(m - 1uL)) {
             val ai = pows(a, j, p, y)
-            jList[ai] = j
+            jMap[ai] = j
         }
         for (i in 1uL..m) {
             val ai = pows(a, i * m, p)
-            val aj: ULong? = jList[ai]
-            aj?.let {
-                return i * m - it
+            val aj: ULong? = jMap[ai]
+            if (aj != null) {
+                val x = i * m - aj
+                val check = pows(a, x, p)
+                check(check == y ) { "Неверное решение: y_res $check != y_ans $y" }
+                return x
             }
         }
         throw IllegalStateException("Число X не найденно!")
