@@ -1,3 +1,4 @@
+
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
@@ -11,29 +12,39 @@ fun main() {
     //library.hellmanRandom()
     //library.babyStepGiantStepRandom()
     //library.shamir()
-    getImageToBynary()
+    val result = getImageToBynary()
+    arrayLongToImage(result)
 }
 
 
-fun getImageToBynary() {
-   // try {
-        val fi = File("src/res/android.jpg")
-        val bytes: ByteArray = Files.readAllBytes(fi.toPath())
-        val list = mutableListOf<Byte>()
-        for(element in bytes) list.add(element)
-        val listBytesArrays = list.chunked(Long.SIZE_BYTES)
-        /*val intBuf = ByteBuffer.wrap(fileContent)
-            .order(ByteOrder.BIG_ENDIAN)
-            .asLongBuffer()
-        val array = LongArray(intBuf.remaining())
-        intBuf.get(array)
-        //println(intBuf.toString())
-        println(array.toString())*/
-        println(ByteUtils.bytesToLong(bytes))
+fun getImageToBynary(): List<Long> {
+    val fi = File("src/res/android.jpg")
+    val bytes: ByteArray = Files.readAllBytes(fi.toPath())
+    val list = mutableListOf<Byte>()
+    for(element in bytes) list.add(element)
+    val listBytesArrays = list.chunked(Long.SIZE_BYTES)
+    val listLong: MutableList<Long> = mutableListOf()
+    for (array in listBytesArrays) {
+        var byte = array.toByteArray()
+        if (byte.size < 8) {
+            val temp = ByteArray(Long.SIZE_BYTES)
+            for (b in 0 until Long.SIZE_BYTES) {
+                temp[b] = byte.getOrNull(b) ?: 0
+            }
+            byte = temp
+        }
+        listLong.add(ByteUtils.bytesToLong(byte))
+    }
+    return listLong
+}
 
-        FileOutputStream("src/res/1.jpg").use { stream -> stream.write(bytes) }
-    // } catch(ex: Exception) {
-   //     println("Ошибка чтения файла!")
-   //     return
-    //}
+fun arrayLongToImage(list: List<Long>) {
+    val bytes = mutableListOf<ByteArray>()
+    for (i in list) {
+        bytes.add(ByteUtils.longToBytes(i))
+    }
+    FileOutputStream("src/res/2.jpg").use { stream ->
+        for(b in bytes)
+        stream.write(b)
+    }
 }
