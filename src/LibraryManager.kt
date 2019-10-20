@@ -5,9 +5,11 @@ import kotlin.random.Random
 class LibraryManager {
 
     private val library = CryptographicLibrary()
+    private val encryptionLibrary = EncryptionLibrary()
 
     companion object {
-        const val MAX_RANDOM_RANGE = 1000000000
+        const val MAX_RANDOM_RANGE = 1000000000 //10 ^ 9
+        const val BIG_RANDOM_RANGE = 1000000 //10 ^ 6
         const val MIN_RANDOM_RANGE = 1
         val whiteColor = 27.toChar() + "[30m"
         val violetColor = 27.toChar() + "[35m"
@@ -27,6 +29,15 @@ class LibraryManager {
             return x
         }
 
+    private val bigRandomPrimeNumber: Int
+        get() {
+            var x: Int
+            do {
+                x =  Random.nextInt(BIG_RANDOM_RANGE, MAX_RANDOM_RANGE)
+            } while (!library.isPrime(x))
+            return x
+        }
+
     fun powsRandom() {
         val a = randomPrimeNumber.toULong()
         val b = randomPrimeNumber.toULong()
@@ -38,8 +49,8 @@ class LibraryManager {
     }
 
     fun extendedEuclideanRandom() {
-        val a = randomPrimeNumber.toLong()
-        val b = randomPrimeNumber.toLong()
+        val a = randomNumber.toLong()
+        val b = randomNumber.toLong()
         val res = library.extendedEuclidean(a, b)
         println("""|
             |${violetColor}2. Расширенный (обобщенный) алгоритм Евклида:$whiteColor
@@ -70,16 +81,53 @@ class LibraryManager {
         val x1 = randomPrimeNumber.toULong()
         val p = randomPrimeNumber.toULong()
         val y = library.pows(a, x1, p)
-
-
-        /*val a = randomNumber.toULong()
-        val p = randomNumber
-        val y = Random.nextInt(MIN_RANDOM_RANGE, p - 1).toULong()*/
         val m = sqrt((p).toDouble()).toULong() + 1uL
         println("""|
             |${violetColor}4. Алгоритм Гельфонда — Шенкса (Шаг младенца - шаг великана):$whiteColor
             |$a ^ x mod $p = $y, m = $m""".trimMargin())
         val x = library.babyStepGiantStep(a, p.toULong(), y, m)
         println("${yellowColor}x = $x$whiteColor")
+    }
+
+    fun shamir() {
+        println("Начало расчета...")
+        val m = 123454321uL
+        val p = randomPrimeNumber
+        println("p = $p")
+        val e = getRandomSh1(p)
+        println("e = $e")
+        val d = getRandomSh2(p.toULong(),e.toULong())
+        println("d = $d")
+        val c = getRandomSh1(p)
+        println("c = $c")
+        val b = getRandomSh2(p.toULong(),c.toULong())
+        println("b = $b")
+        val r = encryptionLibrary.shamir(
+            m,
+            p.toULong(),
+            e.toULong(),
+            d,
+            c.toULong(),
+            b
+        )
+        println("""|
+            |${violetColor}1. Алгоритм Шамира:$whiteColor
+            |m = $m, r = $r""".trimMargin())
+    }
+
+    private fun getRandomSh1(p: Int): Int {
+        var e: Int
+        do {
+            e = Random.nextInt(MIN_RANDOM_RANGE, p)
+        } while (library.euclidean(e.toULong(), (p-1).toULong()) != 1uL)
+        return e
+    }
+
+    private fun getRandomSh2(p: ULong, e: ULong): ULong {
+        var x: ULong
+        do {
+            x = (1uL + randomNumber.toULong() * (p - 1uL)) / e
+        } while (((e % (p - 1uL)) * (x % (p - 1uL))) % (p - 1uL) != 1uL)
+        return x
     }
 }

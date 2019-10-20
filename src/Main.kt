@@ -1,28 +1,39 @@
+import java.io.File
+import java.io.FileOutputStream
+import java.nio.file.Files
+
 
 @ExperimentalUnsignedTypes
 fun main() {
     val library = LibraryManager()
-    /*      val result = library.pows(2uL, 4uL, 11uL, 3uL)
-          println("x = $result")
+    //library.powsRandom()
+    //library.extendedEuclideanRandom()
+    //library.hellmanRandom()
+    //library.babyStepGiantStepRandom()
+    //library.shamir()
+    getImageToBynary()
+}
 
-          val p = 11uL
-          val g = 7uL
-          val xa = 6uL
-          val xb = 5uL
-          library.hellman(p, g, xa, xb)
 
-          val d = library.euclidean(18uL, 8uL)
-          println("D = $d")
-          val a = 155L
-          val b = 134L
-          val res = library.extendedEuclidean(a, b)
-          println("a = $a, b = $b, d = ${res.d}, x = ${res.x}, y = ${res.y}")
+fun getImageToBynary() {
+   // try {
+        val fi = File("src/res/android.jpg")
+        val bytes: ByteArray = Files.readAllBytes(fi.toPath())
+        val list = mutableListOf<Byte>()
+        for(element in bytes) list.add(element)
+        val listBytesArrays = list.chunked(Long.SIZE_BYTES)
+        /*val intBuf = ByteBuffer.wrap(fileContent)
+            .order(ByteOrder.BIG_ENDIAN)
+            .asLongBuffer()
+        val array = LongArray(intBuf.remaining())
+        intBuf.get(array)
+        //println(intBuf.toString())
+        println(array.toString())*/
+        println(ByteUtils.bytesToLong(bytes))
 
-          val x = library.babyStepGiantStep(2uL, 23uL, 9uL, 6uL)
-          println("x = $x")
-           */
-    library.powsRandom()
-    library.extendedEuclideanRandom()
-    library.hellmanRandom()
-    library.babyStepGiantStepRandom()
+        FileOutputStream("src/res/1.jpg").use { stream -> stream.write(bytes) }
+    // } catch(ex: Exception) {
+   //     println("Ошибка чтения файла!")
+   //     return
+    //}
 }

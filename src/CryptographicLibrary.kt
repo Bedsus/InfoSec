@@ -20,7 +20,7 @@ class CryptographicLibrary {
     }
 
     /** Функция быстрого возведения числа [a1] в степень [b1] c множетелем [x] по модулю [m] */
-    private fun pows(a1: ULong, b1: ULong, m: ULong, x: ULong): ULong {
+    fun pows(a1: ULong, b1: ULong, m: ULong, x: ULong): ULong {
         return (pows(a1, b1, m) * x % m) % m
     }
 
@@ -41,7 +41,7 @@ class CryptographicLibrary {
         }
     }
 
-    /** Расширенный (обобщенный) алгоритм Евклида */
+    /** Расширенный (обобщенный) алгоритм Евклида [ax + by = gcd(a,b)] */
     fun extendedEuclidean(a: Long, b: Long): GcdExtData {
         return if (b > a) gcdExt(b , a) else gcdExt(a , b)
     }
@@ -75,6 +75,7 @@ class CryptographicLibrary {
         check(isPrime(q.toInt())) { "По алгоритму Ферма число q = $q должно быть простым!" }
         if(!isPrime(p.toInt())) println("По алгоритму Ферма число p = $p должно быть простым!")
         check(g in 1uL..p-1uL) { "Нарушено условие '1 < g < p'! [g = $g, p = $p]" }
+        check(pows(g, q, p) != 1uL) { "Нарушено условие 'g ^ q mod p != 1' - число g должно быть первообразной корня по модулю p! [g = $g, q = $q, p = $p] " }
         val ya = pows(g, xa, p)
         val yb = pows(g, xb, p)
         println("Ya = $ya, Yb = $yb")
@@ -93,14 +94,14 @@ class CryptographicLibrary {
         check(m * m > p) { "Нарушено условие 'm * k > p'! [m = $m, p = $p]" }
         val jMap = mutableMapOf<ULong, ULong>()
         for (j in 0uL..(m - 1uL)) {
-            val ai = pows(a, j, p, y)
-            jMap[ai] = j
+            val aj = pows(a, j, p, y)
+            jMap[aj] = j
         }
         for (i in 1uL..m) {
             val ai = pows(a, i * m, p)
-            val aj: ULong? = jMap[ai]
-            if (aj != null) {
-                val x = i * m - aj
+            val j: ULong? = jMap[ai]
+            if (j != null) {
+                val x = i * m - j
                 val check = pows(a, x, p)
                 check(check == y ) { "Неверное решение: y_res $check != y_ans $y" }
                 return x
