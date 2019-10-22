@@ -23,4 +23,21 @@ object RandomUtils {
             } while (!library.isPrime(x))
             return x
         }
+
+    fun getMutuallyPrime(x: Int): Int {
+        var e: Int
+        do {
+            e = Random.nextInt(MIN_RANDOM_RANGE, x)
+        } while (library.euclidean(e.toLong(), x.toLong()) != 1L)
+        return e
+    }
+
+    fun `(x*random) mod p = 1`(x: Long, p: Long): Long {
+        var random: Long
+        do {
+            random = (1L + randomNumber.toLong() * (p - 1L)) / x
+        } while (((x % (p - 1L)) * (random % (p - 1L))) % (p - 1L) != 1L)
+        return random
+    }
+
 }

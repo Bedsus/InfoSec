@@ -5,28 +5,18 @@ import utils.ImageUtils
 
 @ExperimentalUnsignedTypes
 fun main() {
-    val result = ImageUtils.imageToLongList("android")
-    val shamir = ShamirMethod(result)
-    shamir.generate()
-    ImageUtils.longListToImage(
-        "11",
-        shamir.shamir()
-    )
-        /*
-    ImageUtils.longListToImage(
-        "1",
-        shamir.step1()
-    )
-    ImageUtils.longListToImage(
-        "2",
-        shamir.step2()
-    )
-    ImageUtils.longListToImage(
-        "3",
-        shamir.step3()
-    )
-    ImageUtils.longListToImage(
-        "4",
-        shamir.step4()
-    )*/
+    println("Считываем файл..")
+    val data = ImageUtils.imageToLongList("android")
+    println("Генерируем и проверяем значения..")
+    val shamir = ShamirMethod(data)
+    println("Начинаем расчет..")
+    //val result = shamir.shamir()
+    for (i in 1..4) {
+        val result = shamir.nextStep()
+        ImageUtils.longListToImage(i.toString(), result)
+    }
+    //println("Расчет закончен. Создаем файл..")
+   // ImageUtils.longListToImage("11", result)
+    println("Файл создан!")
+
 }
