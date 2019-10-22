@@ -19,6 +19,21 @@ class CryptographicLibrary {
         return res
     }
 
+    /** Функция быстрого возведения числа [a1] в степень [b1] по модулю [m] */
+    fun pows(a1: Long, b1: Long, m: Long): Long {
+        var a: Long = a1
+        var b: Long = b1
+        var res = 1L
+        a %= m
+        while (b > 0L) {
+            if (b and 1L == 1L)
+                res = res * a % m
+            b = b shr 1
+            a = a * a % m
+        }
+        return res
+    }
+
     /** Функция быстрого возведения числа [a1] в степень [b1] c множетелем [x] по модулю [m] */
     fun pows(a1: ULong, b1: ULong, m: ULong, x: ULong): ULong {
         return (pows(a1, b1, m) * x % m) % m
@@ -37,6 +52,14 @@ class CryptographicLibrary {
     fun euclidean(a: ULong, b: ULong): ULong {
         return when (b) {
             0uL -> a
+            else -> euclidean(b, a % b)
+        }
+    }
+
+    /** Алгоритм Евклида нахождения НОД двух чисел*/
+    fun euclidean(a: Long, b: Long): Long {
+        return when (b) {
+            0L -> a
             else -> euclidean(b, a % b)
         }
     }

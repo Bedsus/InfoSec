@@ -1,3 +1,5 @@
+import utils.RandomUtils
+import utils.RandomUtils.MIN_RANDOM_RANGE
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -8,40 +10,15 @@ class LibraryManager {
     private val encryptionLibrary = EncryptionLibrary()
 
     companion object {
-        const val MAX_RANDOM_RANGE = 1000000000 //10 ^ 9
-        const val BIG_RANDOM_RANGE = 1000000 //10 ^ 6
-        const val MIN_RANDOM_RANGE = 1
         val whiteColor = 27.toChar() + "[30m"
         val violetColor = 27.toChar() + "[35m"
         val yellowColor = 27.toChar() + "[32m"
     }
 
-    /** Рандомное число до 10^9 */
-    private val randomNumber: Int
-        get() = Random.nextInt(MIN_RANDOM_RANGE, MAX_RANDOM_RANGE)
-
-    private val randomPrimeNumber: Int
-        get() {
-            var x: Int
-            do {
-                x = randomNumber
-            } while (!library.isPrime(x))
-            return x
-        }
-
-    private val bigRandomPrimeNumber: Int
-        get() {
-            var x: Int
-            do {
-                x =  Random.nextInt(BIG_RANDOM_RANGE, MAX_RANDOM_RANGE)
-            } while (!library.isPrime(x))
-            return x
-        }
-
     fun powsRandom() {
-        val a = randomPrimeNumber.toULong()
-        val b = randomPrimeNumber.toULong()
-        val m = randomPrimeNumber.toULong()
+        val a = RandomUtils.randomPrimeNumber.toULong()
+        val b = RandomUtils.randomPrimeNumber.toULong()
+        val m = RandomUtils.randomPrimeNumber.toULong()
         val x = library.pows(a, b, m)
         println("""|
             |${violetColor}1. Функция быстрого возведения:$whiteColor
@@ -49,8 +26,8 @@ class LibraryManager {
     }
 
     fun extendedEuclideanRandom() {
-        val a = randomNumber.toLong()
-        val b = randomNumber.toLong()
+        val a = RandomUtils.randomNumber.toLong()
+        val b = RandomUtils.randomNumber.toLong()
         val res = library.extendedEuclidean(a, b)
         println("""|
             |${violetColor}2. Расширенный (обобщенный) алгоритм Евклида:$whiteColor
@@ -62,12 +39,12 @@ class LibraryManager {
         var p: Int
         var q: Int
         do {
-            p = randomPrimeNumber
+            p = RandomUtils.randomPrimeNumber
             q = (p - 1) / 2
         } while (!library.isPrime(q))
         val g = Random.nextInt(MIN_RANDOM_RANGE, p)
-        val xa = randomNumber.toULong()
-        val xb = randomNumber.toULong()
+        val xa = RandomUtils.randomNumber.toULong()
+        val xb = RandomUtils.randomNumber.toULong()
         println("""|
             |${violetColor}3. Функция построения общего ключа для двух абонентов и по схеме Диффи-Хеллмана:$whiteColor
             |p = $p, q = $q, g = $g, Xa = $xa, Xb = $xb""".trimMargin())
@@ -77,9 +54,9 @@ class LibraryManager {
     }
 
     fun babyStepGiantStepRandom() {
-        val a = randomPrimeNumber.toULong()
-        val x1 = randomPrimeNumber.toULong()
-        val p = randomPrimeNumber.toULong()
+        val a = RandomUtils.randomPrimeNumber.toULong()
+        val x1 = RandomUtils.randomPrimeNumber.toULong()
+        val p = RandomUtils.randomPrimeNumber.toULong()
         val y = library.pows(a, x1, p)
         val m = sqrt((p).toDouble()).toULong() + 1uL
         println("""|
@@ -92,7 +69,7 @@ class LibraryManager {
     fun shamir() {
         println("Начало расчета...")
         val m = 123454321uL
-        val p = randomPrimeNumber
+        val p = RandomUtils.randomPrimeNumber
         println("p = $p")
         val e = getRandomSh1(p)
         println("e = $e")
@@ -126,7 +103,7 @@ class LibraryManager {
     private fun getRandomSh2(p: ULong, e: ULong): ULong {
         var x: ULong
         do {
-            x = (1uL + randomNumber.toULong() * (p - 1uL)) / e
+            x = (1uL + RandomUtils.randomNumber.toULong() * (p - 1uL)) / e
         } while (((e % (p - 1uL)) * (x % (p - 1uL))) % (p - 1uL) != 1uL)
         return x
     }
