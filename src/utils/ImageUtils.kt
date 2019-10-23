@@ -7,6 +7,7 @@ import java.nio.file.Files
 object ImageUtils {
 
     fun imageToLongList(name: String): MutableList<Long> {
+        println("Считываем файл..")
         val file = File("src/res/$name.jpg")
         val bytes: ByteArray = Files.readAllBytes(file.toPath())
         val list = mutableListOf<Byte>()
@@ -29,6 +30,7 @@ object ImageUtils {
     }
 
     fun longListToImage(name: String, list: List<Long>) {
+        println("Создаем файл '$name'..")
         val bytes = mutableListOf<ByteArray>()
         for (i in list) {
             bytes.add(ByteUtils.shortToBytes(i.toShort()))

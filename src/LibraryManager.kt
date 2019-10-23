@@ -7,7 +7,6 @@ import kotlin.random.Random
 class LibraryManager {
 
     private val library = CryptographicLibrary()
-    private val encryptionLibrary = EncryptionLibrary()
 
     companion object {
         val whiteColor = 27.toChar() + "[30m"
@@ -64,47 +63,5 @@ class LibraryManager {
             |$a ^ x mod $p = $y, m = $m""".trimMargin())
         val x = library.babyStepGiantStep(a, p.toULong(), y, m)
         println("${yellowColor}x = $x$whiteColor")
-    }
-
-    fun shamir() {
-        println("Начало расчета...")
-        val m = 123454321uL
-        val p = RandomUtils.randomPrimeNumber
-        println("p = $p")
-        val e = getRandomSh1(p)
-        println("e = $e")
-        val d = getRandomSh2(p.toULong(),e.toULong())
-        println("d = $d")
-        val c = getRandomSh1(p)
-        println("c = $c")
-        val b = getRandomSh2(p.toULong(),c.toULong())
-        println("b = $b")
-        val r = encryptionLibrary.shamir(
-            m,
-            p.toULong(),
-            e.toULong(),
-            d,
-            c.toULong(),
-            b
-        )
-        println("""|
-            |${violetColor}1. Алгоритм Шамира:$whiteColor
-            |m = $m, r = $r""".trimMargin())
-    }
-
-    private fun getRandomSh1(p: Int): Int {
-        var e: Int
-        do {
-            e = Random.nextInt(MIN_RANDOM_RANGE, p)
-        } while (library.euclidean(e.toULong(), (p-1).toULong()) != 1uL)
-        return e
-    }
-
-    private fun getRandomSh2(p: ULong, e: ULong): ULong {
-        var x: ULong
-        do {
-            x = (1uL + RandomUtils.randomNumber.toULong() * (p - 1uL)) / e
-        } while (((e % (p - 1uL)) * (x % (p - 1uL))) % (p - 1uL) != 1uL)
-        return x
     }
 }

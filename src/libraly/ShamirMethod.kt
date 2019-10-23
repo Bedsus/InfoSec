@@ -1,31 +1,36 @@
 package libraly
 
-import CryptographicLibrary
 import utils.RandomUtils
 
 /**
  * Алгоритм Шамира
- * @param message сообщение, которое нужно зашифровать
+ *
  * [p] заведомо большое простое число
  * [e] число, которое выбрал абонент A
  * [d] число, которое выбрал абонент A
  * [c] число, которое выбрал абонент B
  * [b] число, которое выбрал абонент B
  *
- * Шифр Эль-Гамаля, Шифр Вернама, Шифр RSA
+ * , Шифр Вернама, Шифр RSA
  */
 @ExperimentalUnsignedTypes
-class ShamirMethod(private var message: MutableList<Long>) {
+class ShamirMethod : EncryptionScheme<Long>() {
 
-    private val library = CryptographicLibrary()
+    private var p = 0L
+    private var e = 0L
+    private var d = 0L
+    private var c = 0L
+    private var b = 0L
 
-    private val p = RandomUtils.randomPrimeNumber.toLong()
-    private val e = RandomUtils.getMutuallyPrime(p.toInt() - 1).toLong()
-    private val d = getRandomSh2(p,e)
-    private val c = RandomUtils.getMutuallyPrime(p.toInt() - 1).toLong()
-    private val b = getRandomSh2(p,c)
+    override fun generate() {
+        p = RandomUtils.getPrimeNumber()
+        e = RandomUtils.getMutuallyPrime(p - 1)
+        d = RandomUtils.getRandomSh2(p,e)
+        c = RandomUtils.getMutuallyPrime(p - 1)
+        b = RandomUtils.getRandomSh2(p,c)
+    }
 
-    init {
+    override fun checkRule() {
         check( library.euclidean(e, p-1L) == 1L ) {
             "Число e=$e должно быть взаимно простое с p-1 = ${p-1L}"
         }
@@ -34,40 +39,13 @@ class ShamirMethod(private var message: MutableList<Long>) {
         }
     }
 
-    private fun getRandomSh2(p: Long, e: Long): Long {
-        var x: Long
-        do {
-            x = (1L + RandomUtils.randomNumber.toLong() * (p - 1L)) / e
-        } while (((e % (p - 1L)) * (x % (p - 1L))) % (p - 1L) != 1L)
-        return x
+    override fun encrypt(message: Long): Long {
+        val ae = library.pows(message, e, p)
+        return library.pows(ae, b, p)
     }
 
-    private fun step1(num: Long) = library.pows(num, e, p) // A шифрует сообщение, передает В
-    private fun step2(num: Long) = library.pows(num, b, p) // В получил зашифрованное сообщение, преобразует и передает А
-    private fun step3(num: Long) = library.pows(num, d, p) // А получает шифр, преобразует и передает В
-    private fun step4(num: Long) = library.pows(num, c, p) // В получает шифр и расшифровывает сообщение
-
-    fun shamir(): MutableList<Long> {
-        return message.map {
-            val ae = step1(it)
-            val be = step2(ae)
-            val ad = step3(be)
-            step4(ad)
-        }.toMutableList()
-    }
-
-    private val shamirSteps: Iterator<(Long) -> Long> = mutableListOf<(Long) -> Long>(
-        { step1(it) },
-        { step2(it) },
-        { step3(it) },
-        { step4(it) }
-    ).iterator()
-
-    fun nextStep(): MutableList<Long> {
-        if (shamirSteps.hasNext()) {
-            val step: (Long) -> Long = shamirSteps.next()
-            message = message.map { step(it) }.toMutableList()
-        }
-        return message
+    override fun decrypt(message: Long): Long {
+        val ae = library.pows(message, d, p)
+        return library.pows(ae, c, p)
     }
 }

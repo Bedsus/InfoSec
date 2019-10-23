@@ -8,7 +8,6 @@ object RandomUtils {
 
     private val library = CryptographicLibrary()
     private const val MAX_RANDOM_RANGE = 1000000000 //10 ^ 9
-    const val BIG_RANDOM_RANGE = 1000000 //10 ^ 6
     const val MIN_RANDOM_RANGE = 1
 
     /** Рандомное число до 10^9 */
@@ -24,20 +23,30 @@ object RandomUtils {
             return x
         }
 
-    fun getMutuallyPrime(x: Int): Int {
-        var e: Int
+    fun getMutuallyPrime(x: Long): Long {
+        var e: Long
         do {
-            e = Random.nextInt(MIN_RANDOM_RANGE, x)
-        } while (library.euclidean(e.toLong(), x.toLong()) != 1L)
+            e = Random.nextLong(1L, x)
+        } while (library.euclidean(e, x) != 1L)
         return e
     }
 
-    fun `(x*random) mod p = 1`(x: Long, p: Long): Long {
-        var random: Long
-        do {
-            random = (1L + randomNumber.toLong() * (p - 1L)) / x
-        } while (((x % (p - 1L)) * (random % (p - 1L))) % (p - 1L) != 1L)
-        return random
+    fun getPrimeNumber(): Long {
+        return randomPrimeNumber.toLong()
     }
 
+    fun getRandomSh2(p: Long, e: Long): Long {
+        var x: Long
+        do {
+            x = (1L + RandomUtils.randomNumber.toLong() * (p - 1L)) / e
+        } while (((e % (p - 1L)) * (x % (p - 1L))) % (p - 1L) != 1L)
+        return x
+    }
+
+    /**
+     * Получаем первообразную
+     */
+    fun getAntiderivative(p: Long): Long {
+        return Random.nextLong(1L, p - 1L)
+    }
 }

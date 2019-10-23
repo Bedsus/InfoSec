@@ -39,6 +39,11 @@ class CryptographicLibrary {
         return (pows(a1, b1, m) * x % m) % m
     }
 
+    /** Функция быстрого возведения числа [a1] в степень [b1] c множетелем [x] по модулю [m] */
+    fun pows(a1: Long, b1: Long, m: Long, x: Long): Long {
+        return (pows(a1, b1, m) * x % m) % m
+    }
+
     fun isPrime(p: Int): Boolean {
         if(p <= 1) return false
         val b = p.toDouble().pow(0.5).toInt()
