@@ -1,11 +1,11 @@
 import libraly.EncryptionScheme
 
 @ExperimentalUnsignedTypes
-class EncryptionLibrary<T>(
-        private val encryptionScheme: EncryptionScheme<T>
+class EncryptionLibrary<M, T>(
+        private val encryptionScheme: EncryptionScheme<M, T>
 ) {
 
-    fun encryptAllMessage(messages: List<Long>): List<T> {
+    fun encryptAllMessage(messages: List<M>): List<T> {
         println("Генерируем значения..")
         encryptionScheme.generate()
         println("Проверяем сгенерированные значения..")
@@ -14,7 +14,7 @@ class EncryptionLibrary<T>(
         return messages.map { encryptionScheme.encrypt(it) }
     }
 
-    fun decryptAllMessage(messages: List<T>): List<Long> {
+    fun decryptAllMessage(messages: List<T>): List<M> {
         println("Начинаем расшифровку..")
         return messages.map { encryptionScheme.decrypt(it) }
     }

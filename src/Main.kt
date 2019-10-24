@@ -1,5 +1,5 @@
 
-import libraly.ElGamaliaMethod
+import libraly.VernamCipher
 import utils.ImageUtils
 
 
@@ -7,7 +7,7 @@ import utils.ImageUtils
 fun main() {
     val data = ImageUtils.imageToLongList("android")
    // val method = ShamirMethod()
-    val method = ElGamaliaMethod()
+    val method = VernamCipher()
     val library = EncryptionLibrary(method)
     val encrypt = library.encryptAllMessage(data)
    // ImageUtils.longListToImage("encrypt", encrypt)

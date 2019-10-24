@@ -1,5 +1,6 @@
 package libraly
 
+import CryptographicLibrary
 import utils.RandomUtils
 
 /**
@@ -14,8 +15,9 @@ import utils.RandomUtils
  * , Шифр Вернама, Шифр RSA
  */
 @ExperimentalUnsignedTypes
-class ShamirMethod : EncryptionScheme<Long>() {
+class ShamirMethod : EncryptionScheme<Long, Long> {
 
+    private val library = CryptographicLibrary()
     private var p = 0L
     private var e = 0L
     private var d = 0L

@@ -1,5 +1,6 @@
 package libraly
 
+import CryptographicLibrary
 import utils.RandomUtils
 
 /**
@@ -11,8 +12,9 @@ import utils.RandomUtils
  * [y] открытый ключ
  */
 @ExperimentalUnsignedTypes
-class ElGamaliaMethod : EncryptionScheme<Pair<Long, Long>>() {
+class ElGamaliaMethod : EncryptionScheme<Long, Pair<Long, Long>> {
 
+    private val library = CryptographicLibrary()
     private var p = 0L
     private var g = 0L
     private var x = 0L

@@ -1,34 +1,34 @@
 package libraly
 
-import CryptographicLibrary
 /**
- * Общие правила для схемы щифрования
+ * Общие правила для схемы щифрования, где:
+ * [M] - тип сообщения
+ * [T] - Тип зашифрованных данных
  */
 @ExperimentalUnsignedTypes
-abstract class EncryptionScheme<T> {
+interface EncryptionScheme<M, T> {
 
-    protected val library = CryptographicLibrary()
     /**
      * Генерация случайных чисел для шифрования
      */
-    abstract fun generate()
+    fun generate()
 
     /**
      * Проверяем удовлетворяют
      */
-    abstract fun checkRule()
+    fun checkRule()
 
     /**
      * Шифрование сообщения
      * @param message сообщение
      * @return результат шифрования
      */
-    abstract fun encrypt(message: Long): T
+    fun encrypt(message: M): T
 
     /**
      * Расшифровка сообщения
-     * @param message сообщение
+     * @param message зашифрованное сообщение
      * @return результат расшифровки
      */
-    abstract fun decrypt(message: T): Long
+    fun decrypt(message: T): M
 }
