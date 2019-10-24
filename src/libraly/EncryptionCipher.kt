@@ -6,7 +6,9 @@ package libraly
  * [T] - Тип зашифрованных данных
  */
 @ExperimentalUnsignedTypes
-interface EncryptionScheme<M, T> {
+interface EncryptionCipher<M, T> {
+
+    val name: String
 
     /**
      * Генерация случайных чисел для шифрования
@@ -20,15 +22,15 @@ interface EncryptionScheme<M, T> {
 
     /**
      * Шифрование сообщения
-     * @param message сообщение
+     * @param m сообщение
      * @return результат шифрования
      */
-    fun encrypt(message: M): T
+    fun encrypt(m: M): T
 
     /**
      * Расшифровка сообщения
-     * @param message зашифрованное сообщение
+     * @param m зашифрованное сообщение
      * @return результат расшифровки
      */
-    fun decrypt(message: T): M
+    fun decrypt(m: T): M
 }

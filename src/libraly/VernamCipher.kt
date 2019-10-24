@@ -4,10 +4,12 @@ import kotlin.random.Random
 
 /**
  * Шифр Вернама
- * В качестве
+ * В качестве результата выступает пара значений: криптотекст и ключ
  */
 @ExperimentalUnsignedTypes
-class VernamCipher : EncryptionScheme<Long, Pair<Long, Long>> {
+class VernamCipher : EncryptionCipher<Long, Pair<Long, Long>> {
+
+    override val name = "Шифр Вернама"
 
     override fun generate() {
         // Не используется
@@ -18,14 +20,14 @@ class VernamCipher : EncryptionScheme<Long, Pair<Long, Long>> {
         // Не используется
     }
 
-    override fun encrypt(message: Long): Pair<Long, Long> {
-        val key = Random.nextLong(Long.MIN_VALUE,message - 1L)
-        val ciphertext = key.xor(message)
+    override fun encrypt(m: Long): Pair<Long, Long> {
+        val key = Random.nextLong(Long.MIN_VALUE,m - 1L)
+        val ciphertext = key.xor(m)
         return Pair(ciphertext, key)
     }
 
-    override fun decrypt(message: Pair<Long, Long>): Long {
-        val (ciphertext, key) = message
+    override fun decrypt(m: Pair<Long, Long>): Long {
+        val (ciphertext, key) = m
         return ciphertext.xor(key)
     }
 

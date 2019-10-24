@@ -12,7 +12,7 @@ import utils.RandomUtils
  * [y] открытый ключ
  */
 @ExperimentalUnsignedTypes
-class ElGamaliaMethod : EncryptionScheme<Long, Pair<Long, Long>> {
+class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>> {
 
     private val library = CryptographicLibrary()
     private var p = 0L
@@ -20,6 +20,8 @@ class ElGamaliaMethod : EncryptionScheme<Long, Pair<Long, Long>> {
     private var x = 0L
     private var y = 0L
     private var k = 0L
+
+    override val name = "Шифр Эль-Гамаля"
 
     override fun generate() {
         p = RandomUtils.getPrimeNumber()
@@ -44,16 +46,16 @@ class ElGamaliaMethod : EncryptionScheme<Long, Pair<Long, Long>> {
         }
     }
 
-    override fun encrypt(message: Long): Pair<Long, Long> {
-        check(message < p) {
-            "Сообщение должно быть меньше чем [message = $message, p = $p]"
+    override fun encrypt(m: Long): Pair<Long, Long> {
+        check(m < p) {
+            "Сообщение должно быть меньше чем [message = $m, p = $p]"
         }
         val a = library.pows(g, k, p)
-        val b = library.pows(y, k, p, message)
+        val b = library.pows(y, k, p, m)
         return Pair(a, b)
     }
 
-    override fun decrypt(message: Pair<Long, Long>): Long {
-        return library.pows(message.first, p - 1L - x, p, message.second)
+    override fun decrypt(m: Pair<Long, Long>): Long {
+        return library.pows(m.first, p - 1L - x, p, m.second)
     }
 }

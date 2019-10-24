@@ -4,18 +4,16 @@ import CryptographicLibrary
 import utils.RandomUtils
 
 /**
- * Алгоритм Шамира
+ * Шифр Шамира
  *
  * [p] заведомо большое простое число
  * [e] число, которое выбрал абонент A
  * [d] число, которое выбрал абонент A
  * [c] число, которое выбрал абонент B
  * [b] число, которое выбрал абонент B
- *
- * , Шифр Вернама, Шифр RSA
  */
 @ExperimentalUnsignedTypes
-class ShamirMethod : EncryptionScheme<Long, Long> {
+class ShamirCipher : EncryptionCipher<Long, Long> {
 
     private val library = CryptographicLibrary()
     private var p = 0L
@@ -24,12 +22,14 @@ class ShamirMethod : EncryptionScheme<Long, Long> {
     private var c = 0L
     private var b = 0L
 
+    override val name = "Шифр Шамира"
+
     override fun generate() {
         p = RandomUtils.getPrimeNumber()
         e = RandomUtils.getMutuallyPrime(p - 1)
-        d = RandomUtils.getRandomSh2(p,e)
+        d = RandomUtils.getMultiplicativelyInverse(e, p - 1)
         c = RandomUtils.getMutuallyPrime(p - 1)
-        b = RandomUtils.getRandomSh2(p,c)
+        b = RandomUtils.getMultiplicativelyInverse(c, p - 1)
     }
 
     override fun checkRule() {
@@ -41,13 +41,13 @@ class ShamirMethod : EncryptionScheme<Long, Long> {
         }
     }
 
-    override fun encrypt(message: Long): Long {
-        val ae = library.pows(message, e, p)
+    override fun encrypt(m: Long): Long {
+        val ae = library.pows(m, e, p)
         return library.pows(ae, b, p)
     }
 
-    override fun decrypt(message: Long): Long {
-        val ae = library.pows(message, d, p)
+    override fun decrypt(m: Long): Long {
+        val ae = library.pows(m, d, p)
         return library.pows(ae, c, p)
     }
 }

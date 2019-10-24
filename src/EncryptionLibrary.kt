@@ -1,21 +1,22 @@
-import libraly.EncryptionScheme
+import libraly.EncryptionCipher
 
 @ExperimentalUnsignedTypes
 class EncryptionLibrary<M, T>(
-        private val encryptionScheme: EncryptionScheme<M, T>
+        private val cipher: EncryptionCipher<M, T>
 ) {
 
     fun encryptAllMessage(messages: List<M>): List<T> {
+        println(cipher.name)
         println("Генерируем значения..")
-        encryptionScheme.generate()
+        cipher.generate()
         println("Проверяем сгенерированные значения..")
-        encryptionScheme.checkRule()
+        cipher.checkRule()
         println("Начинаем шифрование..")
-        return messages.map { encryptionScheme.encrypt(it) }
+        return messages.map { cipher.encrypt(it) }
     }
 
     fun decryptAllMessage(messages: List<T>): List<M> {
         println("Начинаем расшифровку..")
-        return messages.map { encryptionScheme.decrypt(it) }
+        return messages.map { cipher.decrypt(it) }
     }
 }

@@ -25,8 +25,8 @@ class LibraryManager {
     }
 
     fun extendedEuclideanRandom() {
-        val a = RandomUtils.randomNumber.toLong()
-        val b = RandomUtils.randomNumber.toLong()
+        val a = RandomUtils.getNumber()
+        val b = RandomUtils.getNumber()
         val res = library.extendedEuclidean(a, b)
         println("""|
             |${violetColor}2. Расширенный (обобщенный) алгоритм Евклида:$whiteColor
@@ -42,8 +42,8 @@ class LibraryManager {
             q = (p - 1) / 2
         } while (!library.isPrime(q))
         val g = Random.nextInt(MIN_RANDOM_RANGE, p)
-        val xa = RandomUtils.randomNumber.toULong()
-        val xb = RandomUtils.randomNumber.toULong()
+        val xa = RandomUtils.getNumber().toULong()
+        val xb = RandomUtils.getNumber().toULong()
         println("""|
             |${violetColor}3. Функция построения общего ключа для двух абонентов и по схеме Диффи-Хеллмана:$whiteColor
             |p = $p, q = $q, g = $g, Xa = $xa, Xb = $xb""".trimMargin())

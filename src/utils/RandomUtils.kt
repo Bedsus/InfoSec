@@ -11,7 +11,7 @@ object RandomUtils {
     const val MIN_RANDOM_RANGE = 1
 
     /** Рандомное число до 10^9 */
-    val randomNumber: Int
+    private val randomNumber: Int
         get() = Random.nextInt(MIN_RANDOM_RANGE, MAX_RANDOM_RANGE)
 
     val randomPrimeNumber: Int
@@ -31,16 +31,31 @@ object RandomUtils {
         return e
     }
 
+    fun getNumber(): Long {
+        return randomNumber.toLong()
+    }
+
     fun getPrimeNumber(): Long {
         return randomPrimeNumber.toLong()
     }
 
-    fun getRandomSh2(p: Long, e: Long): Long {
-        var x: Long
+    fun getShortPrimeNumber(): Long {
+        var x: Int
         do {
-            x = (1L + RandomUtils.randomNumber.toLong() * (p - 1L)) / e
-        } while (((e % (p - 1L)) * (x % (p - 1L))) % (p - 1L) != 1L)
-        return x
+            x = Random.nextInt(MIN_RANDOM_RANGE, Short.MAX_VALUE.toInt())
+        } while (!library.isPrime(x))
+        return x.toLong()
+    }
+
+    /**
+     * Получение числа мультипликативно обратное к числу [e] по модулю [p], такое что: d * e = 1 mod p
+     */
+    fun getMultiplicativelyInverse(e: Long, p: Long): Long {
+        var d: Long
+        do {
+            d = (1L + getNumber() * p) / e
+        } while (((e % p) * (d % p)) % p != 1L)
+        return d
     }
 
     /**
