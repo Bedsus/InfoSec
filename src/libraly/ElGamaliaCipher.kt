@@ -56,6 +56,7 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>> {
     }
 
     override fun decrypt(m: Pair<Long, Long>): Long {
-        return library.pows(m.first, p - 1L - x, p, m.second)
+        val (a, b) = m
+        return library.pows(a, p - 1L - x, p, b)
     }
 }

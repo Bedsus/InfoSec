@@ -1,16 +1,15 @@
 
 import libraly.RsaCipher
-import utils.ImageUtils
-
+import utils.FileUtils
 
 @ExperimentalUnsignedTypes
 fun main() {
-    val data = ImageUtils.imageToLongList("android")
-    //val method = ShamirCipher()
+    val data = FileUtils.fileToLongList("4k.jpg")
+    //val method = ElGamaliaCipher()
     val method = RsaCipher()
     val library = EncryptionLibrary(method)
     val encrypt = library.encryptAllMessage(data)
-    ImageUtils.longListToImage("encrypt", encrypt)
+    //FileUtils.longListToFile("encrypt.jpg", encrypt)
     val result = library.decryptAllMessage(encrypt)
-    ImageUtils.longListToImage("decrypt", result)
+    FileUtils.longListToFile("decrypt.jpg", result)
 }

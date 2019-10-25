@@ -4,11 +4,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
 
-object ImageUtils {
+object FileUtils {
 
-    fun imageToLongList(name: String): MutableList<Long> {
+    fun fileToLongList(name: String): MutableList<Long> {
         println("Считываем файл..")
-        val file = File("src/res/$name.jpg")
+        val file = File("src/res/$name")
         val bytes: ByteArray = Files.readAllBytes(file.toPath())
         val list = mutableListOf<Byte>()
         for(element in bytes)
@@ -29,13 +29,13 @@ object ImageUtils {
         return listLong
     }
 
-    fun longListToImage(name: String, list: List<Long>) {
+    fun longListToFile(name: String, list: List<Long>) {
         println("Создаем файл '$name'..")
         val bytes = mutableListOf<ByteArray>()
         for (i in list) {
             bytes.add(ByteUtils.shortToBytes(i.toShort()))
         }
-        FileOutputStream("src/res/$name.jpg").use { stream ->
+        FileOutputStream("src/res/$name").use { stream ->
             for(b in bytes)
                 stream.write(b)
         }
