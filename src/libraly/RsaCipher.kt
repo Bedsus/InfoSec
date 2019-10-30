@@ -4,7 +4,7 @@ import CryptographicLibrary
 import utils.RandomUtils
 
 @ExperimentalUnsignedTypes
-class RsaCipher : EncryptionCipher<Long, Long> {
+class RsaCipher : EncryptionCipher<Long, Long>, HashCipher<Long, Pair<Long, Long>> {
 
     private val library = CryptographicLibrary()
     var publicKey: Pair<Long, Long> = Pair(3L, 9173503L)
@@ -29,6 +29,21 @@ class RsaCipher : EncryptionCipher<Long, Long> {
         println("d = $d")
         publicKey = Pair(e, n)
         privateKey = Pair(d, n)
+    }
+
+    override fun hash(message: Long): Pair<Long, Long> {
+        val (d, n) = privateKey
+        val h = SHA.hash(message.toString())
+        val s = library.pows(0L/*h*/, d, n) // TODO h string to long
+        return Pair(message, s)
+    }
+
+    override fun verification(message: Pair<Long, Long>): Boolean {
+        val (m, s) = message
+        val (e, n) = publicKey
+        val h = SHA.hash(m.toString())
+        val E = library.pows(s, e, n)
+        return E == 0L // TODO h string to long
     }
 
     override fun checkRule() {
