@@ -7,13 +7,16 @@ import java.nio.file.Files
 object FileUtils {
 
     fun fileToLongList(name: String): MutableList<Long> {
-        println("Считываем файл..")
-        val file = File("src/res/$name")
-        val bytes: ByteArray = Files.readAllBytes(file.toPath())
         val list = mutableListOf<Long>()
-        for(element in bytes)
+        for(element in fileToByteArray(name))
             list.add(element.toLong())
         return list
+    }
+
+    fun fileToByteArray(name: String): ByteArray {
+        println("Считываем файл..")
+        val file = File("src/res/$name")
+        return Files.readAllBytes(file.toPath())
     }
 
     fun longListToFile(name: String, list: List<Long>) {

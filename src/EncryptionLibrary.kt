@@ -1,4 +1,4 @@
-import libraly.EncryptionCipher
+import libraly.contract.EncryptionCipher
 
 @ExperimentalUnsignedTypes
 class EncryptionLibrary<M, T>(

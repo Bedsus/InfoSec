@@ -51,7 +51,7 @@ object RandomUtils {
     fun getShortPrimeNumber(): Long {
         var x: Int
         do {
-            x = Random.nextInt(MIN_RANDOM_RANGE, Short.MAX_VALUE.toInt())
+            x = Random.nextInt(32500, 45000)
         } while (!library.isPrime(x))
         return x.toLong()
     }

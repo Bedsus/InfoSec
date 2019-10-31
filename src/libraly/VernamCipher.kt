@@ -1,5 +1,6 @@
 package libraly
 
+import libraly.contract.EncryptionCipher
 import kotlin.random.Random
 
 /**

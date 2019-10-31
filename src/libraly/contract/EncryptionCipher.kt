@@ -1,4 +1,4 @@
-package libraly
+package libraly.contract
 
 /**
  * Общие правила для схемы щифрования, где:
@@ -6,19 +6,7 @@ package libraly
  * [T] - Тип зашифрованных данных
  */
 @ExperimentalUnsignedTypes
-interface EncryptionCipher<M, T> {
-
-    val name: String
-
-    /**
-     * Генерация случайных чисел для шифрования
-     */
-    fun generate()
-
-    /**
-     * Проверяем удовлетворяют
-     */
-    fun checkRule()
+interface EncryptionCipher<M, T> : Cipher {
 
     /**
      * Шифрование сообщения

@@ -1,6 +1,7 @@
 package libraly
 
 import CryptographicLibrary
+import libraly.contract.EncryptionCipher
 import utils.RandomUtils
 
 /**
