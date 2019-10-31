@@ -1,12 +1,12 @@
 
-import libraly.RsaCipher
+import libraly.ElGamaliaCipher
 import utils.FileUtils
 
 @ExperimentalUnsignedTypes
 fun main() {
-    val data = FileUtils.fileToLongList("4k.jpg")
-    //val method = ElGamaliaCipher()
-    val method = RsaCipher()
+    val data = FileUtils.fileToLongList("android.jpg")
+    val method = ElGamaliaCipher()
+    //val method = RsaCipher()
     val library = EncryptionLibrary(method)
     val encrypt = library.encryptAllMessage(data)
     //FileUtils.longListToFile("encrypt.jpg", encrypt)

@@ -10,34 +10,18 @@ object FileUtils {
         println("Считываем файл..")
         val file = File("src/res/$name")
         val bytes: ByteArray = Files.readAllBytes(file.toPath())
-        val list = mutableListOf<Byte>()
+        val list = mutableListOf<Long>()
         for(element in bytes)
-            list.add(element)
-        val listBytesArrays = list.chunked(ByteUtils.size)
-        val listLong: MutableList<Long> = mutableListOf()
-        for (array in listBytesArrays) {
-            var byte = array.toByteArray()
-            if (byte.size < ByteUtils.size) {
-                val temp = ByteArray(ByteUtils.size)
-                for (b in 0 until ByteUtils.size) {
-                    temp[b] = byte.getOrNull(b) ?: 0
-                }
-                byte = temp
-            }
-            listLong.add(ByteUtils.bytesToShort(byte).toLong())
-        }
-        return listLong
+            list.add(element.toLong())
+        return list
     }
 
     fun longListToFile(name: String, list: List<Long>) {
         println("Создаем файл '$name'..")
-        val bytes = mutableListOf<ByteArray>()
-        for (i in list) {
-            bytes.add(ByteUtils.shortToBytes(i.toShort()))
+        val bytes = ByteArray(list.size)
+        for (i in list.indices) {
+            bytes[i] = list[i].toByte()
         }
-        FileOutputStream("src/res/$name").use { stream ->
-            for(b in bytes)
-                stream.write(b)
-        }
+        FileOutputStream("src/res/$name").use { stream -> stream.write(bytes) }
     }
 }

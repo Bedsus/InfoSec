@@ -23,6 +23,9 @@ object RandomUtils {
             return x
         }
 
+    /**
+     * Получить взаимно простое число с [x]
+     */
     fun getMutuallyPrime(x: Long): Long {
         var e: Long
         do {
@@ -35,10 +38,16 @@ object RandomUtils {
         return randomNumber.toLong()
     }
 
+    /**
+     * Получить простое число
+     */
     fun getPrimeNumber(): Long {
         return randomPrimeNumber.toLong()
     }
 
+    /**
+     * Получить короткое простое число
+     */
     fun getShortPrimeNumber(): Long {
         var x: Int
         do {
@@ -48,13 +57,17 @@ object RandomUtils {
     }
 
     /**
+     * Инверсия числа
      * Получение числа мультипликативно обратное к числу [e] по модулю [p], такое что: d * e = 1 mod p
      */
     fun getMultiplicativelyInverse(e: Long, p: Long): Long {
         var d: Long
         do {
-            d = (1L + getNumber() * p) / e
+            d = (1L + Random.nextInt() * p) / e
         } while (((e % p) * (d % p)) % p != 1L)
+        while (d < 0) {
+            d += p
+        }
         return d
     }
 

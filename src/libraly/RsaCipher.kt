@@ -13,7 +13,6 @@ class RsaCipher : EncryptionCipher<Long, Long>, HashCipher<Long, Pair<Long, Long
     override val name = "Шифр RSA"
 
     override fun generate() {
-        // TODO Ошибка в генерации ключей !!
         val p = RandomUtils.getShortPrimeNumber()
         println("p = $p")
         val q = RandomUtils.getShortPrimeNumber()
@@ -22,10 +21,9 @@ class RsaCipher : EncryptionCipher<Long, Long>, HashCipher<Long, Pair<Long, Long
         println("n = $n")
         val f = (p - 1L) * (q - 1L) // функция Эйлера
         println("f = $f")
-        val e = RandomUtils.getMutuallyPrime(f) // простая из чисел Ферма
+        val e = RandomUtils.getMutuallyPrime(f) // открытая экспонента, простая из чисел Ферма
         println("e = $e")
-        /** val e = RandomUtils.getMutuallyPrime(f) // открытая экспонента */
-        val d = RandomUtils.getMultiplicativelyInverse(f, e) // Секретная экспонента
+        val d = RandomUtils.getMultiplicativelyInverse(e, f) // Секретная экспонента
         println("d = $d")
         publicKey = Pair(e, n)
         privateKey = Pair(d, n)
