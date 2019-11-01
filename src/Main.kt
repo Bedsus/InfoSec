@@ -1,15 +1,19 @@
 
-import libraly.RsaCipher
+import libraly.ElGamaliaCipher
 import utils.FileUtils
 
 @ExperimentalUnsignedTypes
 fun main() {
     val data = FileUtils.fileToByteArray("android.jpg")
-    //val method = ElGamaliaCipher()
-    val method = RsaCipher()
-    val signLib = SignatureLibraly(method)
-    val res = signLib.singAllMessage(data)
-    println(signLib.verifyAllMessage(res))
+    val method = ElGamaliaCipher()
+   // val method = RsaCipher()
+    val signLib = SignatureLibrary(method)
+    val hash = signLib.singAllMessage(data)
+    if (signLib.verifyAllMessage(hash)){
+        println("Верификация прошла успешно!")
+    } else {
+        println("Ошибка верификации")
+    }
     /*
     val library = EncryptionLibrary(method)
     val encrypt = library.encryptAllMessage(data)

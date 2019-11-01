@@ -1,8 +1,12 @@
 package libraly
 
 import CryptographicLibrary
+import libraly.contract.ElectronicSignature
 import libraly.contract.EncryptionCipher
+import libraly.data.ElGamaliaHashData
+import utils.HashUtils
 import utils.RandomUtils
+import kotlin.math.pow
 
 /**
  * Шифр Эль-Гамаля
@@ -13,7 +17,7 @@ import utils.RandomUtils
  * [y] открытый ключ
  */
 @ExperimentalUnsignedTypes
-class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>> {
+class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSignature<ElGamaliaHashData> {
 
     private val library = CryptographicLibrary()
     private var p = 0L
@@ -25,7 +29,7 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>> {
     override val name = "Шифр Эль-Гамаля"
 
     override fun generate() {
-        p = RandomUtils.getPrimeNumber()
+        p = 8191L//RandomUtils.getPrimeNumber()
         x = RandomUtils.getAntiderivative(p)
         g = RandomUtils.getAntiderivative(p)
         k = RandomUtils.getAntiderivative(p)
@@ -59,5 +63,26 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>> {
     override fun decrypt(m: Pair<Long, Long>): Long {
         val (a, b) = m
         return library.pows(a, p - 1L - x, p, b)
+    }
+
+    override fun sign(m: Byte): ElGamaliaHashData {
+        val h = HashUtils.sha256(m)
+        val r  = library.pows(g, k, p).toDouble()
+        val u  = (h - x * r) % (p - 1)
+        val s  = (u / k) % (p - 1)
+        return ElGamaliaHashData(m, r, s)
+    }
+
+    override fun verify(data: ElGamaliaHashData): Boolean {
+        val m = data.m
+        val r = data.r
+        val s = data.s
+        val y = this.y
+        val h = HashUtils.sha256(m).toLong()
+        val x1 = library.pows(y, r.toLong(), p)
+        val x2 = r.pow(s)
+        val x3 = (x1 * x2) % p
+        val x4 = library.pows(g, h, p).toDouble()
+        return x3 == x4
     }
 }

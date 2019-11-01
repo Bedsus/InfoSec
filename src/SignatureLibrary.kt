@@ -1,8 +1,7 @@
 import libraly.contract.ElectronicSignature
 import libraly.data.HashDataRule
-import utils.HashUtils
 
-class SignatureLibraly<T : HashDataRule>(
+class SignatureLibrary<T : HashDataRule>(
         private val cipher: ElectronicSignature<T>
 ) {
 
@@ -13,13 +12,12 @@ class SignatureLibraly<T : HashDataRule>(
         println("Проверяем сгенерированные значения..")
         cipher.checkRule()
         println("Начинаем подпись ключей..")
-        return HashUtils.sha256(messages)
-                .map { cipher.sign(it) }
+        return messages.map { cipher.sign(it) }
     }
 
     fun verifyAllMessage(hash: List<T>): Boolean {
         println("Верификация..")
-        return hash.map { cipher.verify(it) }
-                .find { !it } ?: false
+        val verify = hash.map { cipher.verify(it) }
+        return verify.none { !it }
     }
 }

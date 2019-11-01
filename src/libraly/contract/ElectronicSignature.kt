@@ -6,7 +6,7 @@ interface ElectronicSignature<T : HashDataRule> : Cipher {
     /**
      * Отправитель производить подпись документа
      */
-    fun sign(hash: Byte): T
+    fun sign(m: Byte): T
 
     /**
      * Проверка подлиности подписи

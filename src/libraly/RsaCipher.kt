@@ -47,19 +47,19 @@ class RsaCipher : EncryptionCipher<Long, Long>, ElectronicSignature<RsaHashData>
         return library.pows(m, d, n)
     }
 
-    override fun sign(hash: Byte): RsaHashData {
-        val (d, n) = privateKey
-        val s = library.pows(hash.toLong(), d, n)
-        return RsaHashData(hash, s)
+    override fun sign(m: Byte): RsaHashData {
+        val (c, n) = privateKey
+        val h = HashUtils.sha256(m)
+        val s = library.pows(h.toLong(), c, n)
+        return RsaHashData(m, s)
     }
 
     override fun verify(data: RsaHashData): Boolean {
-        val (e, n) = publicKey
-        val bytes = ByteArray(1)
-        bytes[0] = data.byte
-        val h = HashUtils.sha256(bytes)[0]
-        val r = library.pows(data.s, e, n)
-                .toByte()
-        return r == h
+        val (d, n) = publicKey
+        val m = data.m
+        val s = data.s
+        val h = HashUtils.sha256(m)
+        val e = library.pows(s, d, n).toByte()
+        return e == h
     }
 }

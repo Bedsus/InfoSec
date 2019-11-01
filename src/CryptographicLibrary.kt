@@ -69,6 +69,13 @@ class CryptographicLibrary {
         }
     }
 
+    fun euclidean(a: Int, b: Int): Int {
+        return when (b) {
+            0 -> a
+            else -> euclidean(b, a % b)
+        }
+    }
+
     /** Расширенный (обобщенный) алгоритм Евклида [ax + by = gcd(a,b)] */
     fun extendedEuclidean(a: Long, b: Long): GcdExtData {
         return if (b > a) gcdExt(b , a) else gcdExt(a , b)
