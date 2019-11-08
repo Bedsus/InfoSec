@@ -8,7 +8,7 @@ import utils.HashUtils
 import utils.RandomUtils
 
 @ExperimentalUnsignedTypes
-class RsaCipher : EncryptionCipher<Long, Long>, ElectronicSignature<RsaHashData> {
+class RsaCipher : EncryptionCipher<Long, Long>, ElectronicSignature<Byte, RsaHashData> {
 
     private val library = CryptographicLibrary()
     var publicKey: Pair<Long, Long> = Pair(3L, 9173503L)

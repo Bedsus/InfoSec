@@ -6,7 +6,6 @@ import libraly.contract.EncryptionCipher
 import libraly.data.ElGamaliaHashData
 import utils.HashUtils
 import utils.RandomUtils
-import kotlin.math.pow
 
 /**
  * Шифр Эль-Гамаля
@@ -17,7 +16,7 @@ import kotlin.math.pow
  * [y] открытый ключ
  */
 @ExperimentalUnsignedTypes
-class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSignature<ElGamaliaHashData> {
+class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSignature<Char, ElGamaliaHashData> {
 
     private val library = CryptographicLibrary()
     private var p = 0L
@@ -29,7 +28,8 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
     override val name = "Шифр Эль-Гамаля"
 
     override fun generate() {
-        p = 8191L//RandomUtils.getPrimeNumber()
+        val (p1, _) = RandomUtils.getPQ()
+        p = p1.toLong()
         x = RandomUtils.getAntiderivative(p)
         g = RandomUtils.getAntiderivative(p)
         k = RandomUtils.getAntiderivative(p)
@@ -65,9 +65,15 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
         return library.pows(a, p - 1L - x, p, b)
     }
 
-    override fun sign(m: Byte): ElGamaliaHashData {
-        val h = HashUtils.sha256(m)
-        val r  = library.pows(g, k, p).toDouble()
+    override fun sign(m: Char): ElGamaliaHashData {
+        val hByte = HashUtils.sha256(m)
+        // инверсия числа + 1
+        val h: Long = (hByte xor 128.toByte()).toLong()
+        check(h in 1 until p) {
+            "Сообщение должно быть меньше чем [message = $m, p = $p]"
+        }
+        k = RandomUtils.getAntiderivative(p)
+        val r  = library.pows(g, k, p)
         val u  = (h - x * r) % (p - 1)
         val s  = (u / k) % (p - 1)
         return ElGamaliaHashData(m, r, s)
@@ -79,10 +85,10 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
         val s = data.s
         val y = this.y
         val h = HashUtils.sha256(m).toLong()
-        val x1 = library.pows(y, r.toLong(), p)
-        val x2 = r.pow(s)
+        val x1 = library.pows(y, r, p)
+        val x2 = library.pows(r, s, p)
         val x3 = (x1 * x2) % p
-        val x4 = library.pows(g, h, p).toDouble()
+        val x4 = library.pows(g, h, p)
         return x3 == x4
     }
 }

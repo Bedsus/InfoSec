@@ -2,11 +2,11 @@ package libraly.contract
 
 import libraly.data.HashDataRule
 
-interface ElectronicSignature<T : HashDataRule> : Cipher {
+interface ElectronicSignature<M, T : HashDataRule> : Cipher {
     /**
      * Отправитель производить подпись документа
      */
-    fun sign(m: Byte): T
+    fun sign(m: M): T
 
     /**
      * Проверка подлиности подписи

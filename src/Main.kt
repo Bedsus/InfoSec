@@ -4,11 +4,11 @@ import utils.FileUtils
 
 @ExperimentalUnsignedTypes
 fun main() {
-    val data = FileUtils.fileToByteArray("android.jpg")
+    val data = FileUtils.fileToCharArray("android.jpg")
     val method = ElGamaliaCipher()
-   // val method = RsaCipher()
+    //val method = RsaCipher()
     val signLib = SignatureLibrary(method)
-    val hash = signLib.singAllMessage(data)
+    val hash = signLib.singAllMessage(data.toList())
     if (signLib.verifyAllMessage(hash)){
         println("Верификация прошла успешно!")
     } else {

@@ -35,12 +35,7 @@ class LibraryManager {
     }
 
     fun hellmanRandom() {
-        var p: Int
-        var q: Int
-        do {
-            p = RandomUtils.randomPrimeNumber
-            q = (p - 1) / 2
-        } while (!library.isPrime(q))
+        val (p, q) = RandomUtils.getPQ()
         val g = Random.nextInt(MIN_RANDOM_RANGE, p)
         val xa = RandomUtils.getNumber().toULong()
         val xb = RandomUtils.getNumber().toULong()

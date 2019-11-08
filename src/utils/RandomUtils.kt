@@ -85,4 +85,18 @@ object RandomUtils {
     fun getAntiderivative(p: Long): Long {
         return Random.nextLong(1L, p - 1L)
     }
+
+    /**
+     * P = 2Q - 1
+     * P, Q - простые числа
+     */
+    fun getPQ(): Pair<Int, Int> {
+        var p: Int
+        var q: Int
+        do {
+            p = randomPrimeNumber
+            q = (p - 1) / 2
+        } while (!library.isPrime(q))
+        return Pair(p, q)
+    }
 }

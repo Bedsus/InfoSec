@@ -1,11 +1,11 @@
 import libraly.contract.ElectronicSignature
 import libraly.data.HashDataRule
 
-class SignatureLibrary<T : HashDataRule>(
-        private val cipher: ElectronicSignature<T>
+class SignatureLibrary<M, T : HashDataRule>(
+        private val cipher: ElectronicSignature<M, T>
 ) {
 
-    fun singAllMessage(messages: ByteArray): List<T> {
+    fun singAllMessage(messages: List<M>): List<T> {
         println(cipher.name)
         println("Генерируем значения..")
         cipher.generate()
