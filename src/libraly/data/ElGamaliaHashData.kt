@@ -1,3 +1,3 @@
 package libraly.data
 
-class ElGamaliaHashData(override val m: Byte, val r: Long, val s: Long) : HashDataRule
+class ElGamaliaHashData(override val m: Byte, val r: Long, val s: Long, val y: Long, val p: Long, val g: Long) : HashDataRule

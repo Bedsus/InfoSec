@@ -16,7 +16,7 @@ import utils.RandomUtils
  * [y] открытый ключ
  */
 @ExperimentalUnsignedTypes
-class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSignature<Char, ElGamaliaHashData> {
+class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSignature<Byte, ElGamaliaHashData> {
 
     private val library = CryptographicLibrary()
     private var p = 0L
@@ -65,30 +65,36 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
         return library.pows(a, p - 1L - x, p, b)
     }
 
-    override fun sign(m: Char): ElGamaliaHashData {
-        val hByte = HashUtils.sha256(m)
-        // инверсия числа + 1
-        val h: Long = (hByte xor 128.toByte()).toLong()
+    override fun sign(m: Byte): ElGamaliaHashData {
+        val h = HashUtils.sha256Int(m)
         check(h in 1 until p) {
-            "Сообщение должно быть меньше чем [message = $m, p = $p]"
+            "Сообщение должно быть меньше чем [message = $h, p = $p]"
         }
-        k = RandomUtils.getAntiderivative(p)
         val r  = library.pows(g, k, p)
-        val u  = (h - x * r) % (p - 1)
-        val s  = (u / k) % (p - 1)
-        return ElGamaliaHashData(m, r, s)
+        var u  = (h - x * r) % (p - 1)
+        if (u < 1)
+            u += p - 1
+        val invK: Long = if (library.euclidean(k, p-1) > 1){
+            library.euclidean(k, p-1)
+        } else {
+            library.euclidean(k, p-1) + p - 1
+        }
+        val s = (invK * u) % (p - 1)
+        return ElGamaliaHashData(m, r, s, y, p, g)
     }
 
     override fun verify(data: ElGamaliaHashData): Boolean {
         val m = data.m
         val r = data.r
         val s = data.s
-        val y = this.y
-        val h = HashUtils.sha256(m).toLong()
+        val y = data.y
+        val p = data.p
+        val g = data.g
+        val h = HashUtils.sha256Int(m)
         val x1 = library.pows(y, r, p)
         val x2 = library.pows(r, s, p)
         val x3 = (x1 * x2) % p
-        val x4 = library.pows(g, h, p)
+        val x4 = library.pows(g, h.toLong(), p)
         return x3 == x4
     }
 }

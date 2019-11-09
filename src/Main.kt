@@ -4,7 +4,7 @@ import utils.FileUtils
 
 @ExperimentalUnsignedTypes
 fun main() {
-    val data = FileUtils.fileToCharArray("android.jpg")
+    val data = FileUtils.fileToByteArray("android.jpg")
     val method = ElGamaliaCipher()
     //val method = RsaCipher()
     val signLib = SignatureLibrary(method)
