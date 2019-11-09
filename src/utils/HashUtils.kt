@@ -28,8 +28,8 @@ object HashUtils {
     private fun hashInt(type: String, message: Byte): Int{
         val bytes = ByteArray(1)
         bytes[0] = message
-        val bytesHash: ByteArray = MessageDigest.getInstance(type).digest(bytes)
-        return bytesHash[0] + 128
+        val bytesHash = MessageDigest.getInstance(type).digest(bytes)
+        return  bytesHash[0] + 128
     }
 
     fun sha256(input: Byte) = hash("SHA-256", input)

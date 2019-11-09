@@ -70,31 +70,29 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
         check(h in 1 until p) {
             "Сообщение должно быть меньше чем [message = $h, p = $p]"
         }
+        k = RandomUtils.getMutuallyPrime(p-1)
+        var kInv = library.euclidean(k, p-1)
+            //   if (kInv < 1) kInv += p - 1
+        check((k * kInv) % (p - 1L) == 1L){
+            "Нарушено условие"
+        }
         val r  = library.pows(g, k, p)
         var u  = (h - x * r) % (p - 1)
         if (u < 1)
             u += p - 1
-        val invK: Long = if (library.euclidean(k, p-1) > 1){
-            library.euclidean(k, p-1)
-        } else {
-            library.euclidean(k, p-1) + p - 1
-        }
-        val s = (invK * u) % (p - 1)
+
+        val s = (kInv * u) % (p - 1)
         return ElGamaliaHashData(m, r, s, y, p, g)
     }
 
     override fun verify(data: ElGamaliaHashData): Boolean {
-        val m = data.m
-        val r = data.r
-        val s = data.s
-        val y = data.y
-        val p = data.p
-        val g = data.g
-        val h = HashUtils.sha256Int(m)
-        val x1 = library.pows(y, r, p)
-        val x2 = library.pows(r, s, p)
-        val x3 = (x1 * x2) % p
-        val x4 = library.pows(g, h.toLong(), p)
-        return x3 == x4
+        data.apply {
+            val h = HashUtils.sha256Int(m)
+            val x1 = library.pows(y, r, p)
+            val x2 = library.pows(r, s, p)
+            val x3 = (x1 * x2) % p
+            val x4 = library.pows(g, h.toLong(), p)
+            return x3 == x4
+        }
     }
 }
