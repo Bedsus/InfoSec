@@ -71,16 +71,14 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
             "Сообщение должно быть меньше чем [message = $h, p = $p]"
         }
         k = RandomUtils.getMutuallyPrime(p-1)
-        var kInv = library.euclidean(k, p-1)
-            //   if (kInv < 1) kInv += p - 1
-        check((k * kInv) % (p - 1L) == 1L){
-            "Нарушено условие"
-        }
+        val data = library.extendedEuclidean(k, p-1)
+        var kInv = data.y
+        if (kInv < 1) kInv += p - 1
+        check((k * kInv) % (p - 1L) == 1L) { "Нарушено условие" }
         val r  = library.pows(g, k, p)
         var u  = (h - x * r) % (p - 1)
         if (u < 1)
             u += p - 1
-
         val s = (kInv * u) % (p - 1)
         return ElGamaliaHashData(m, r, s, y, p, g)
     }
