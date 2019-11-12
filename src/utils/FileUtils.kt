@@ -19,13 +19,6 @@ object FileUtils {
         return Files.readAllBytes(file.toPath())
     }
 
-    /*fun fileToCharArray(name: String): CharArray {
-        println("Считываем файл..")
-        val file = File("src/res/$name")
-        return Files.readString(file.toPath())
-            .toCharArray()
-    }*/
-
     fun longListToFile(name: String, list: List<Long>) {
         println("Создаем файл '$name'..")
         val bytes = ByteArray(list.size)

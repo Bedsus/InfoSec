@@ -34,14 +34,6 @@ object RandomUtils {
         return e
     }
 
-    fun getMutuallyPrime(x: Int): Int {
-        var e: Int
-        do {
-            e = Random.nextInt(1, x)
-        } while (library.euclidean(e, x) != 1)
-        return e
-    }
-
     fun getNumber(): Long {
         return randomNumber.toLong()
     }

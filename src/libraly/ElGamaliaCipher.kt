@@ -38,7 +38,7 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
 
     override fun checkRule() {
         check(library.isPrime(p.toInt())) {
-            "По алгоритму Ферма число q = $p должно быть простым!"
+            "По алгоритму Ферма число p = $p должно быть простым!"
         }
         check(x in 1L until p) {
             "Нарушено условие '1 < x < p-1'! [x = $x, p = $p]"

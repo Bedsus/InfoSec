@@ -1,12 +1,13 @@
 
-import libraly.ElGamaliaCipher
+import libraly.GostElectronicSignature
 import utils.FileUtils
 
 @ExperimentalUnsignedTypes
 fun main() {
     val data = FileUtils.fileToByteArray("android.jpg")
-    val method = ElGamaliaCipher()
+  //  val method = ElGamaliaCipher()
     //val method = RsaCipher()
+    val method = GostElectronicSignature()
     val signLib = SignatureLibrary(method)
     val hash = signLib.singAllMessage(data.toList())
     if (signLib.verifyAllMessage(hash)){
