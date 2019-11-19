@@ -4,8 +4,6 @@ import java.nio.ByteBuffer
 
 object ByteUtils {
 
-    const val size = Short.SIZE_BYTES
-
     fun longToBytes(x: Long): ByteArray {
         val buffer = ByteBuffer.allocate(Long.SIZE_BYTES)
         buffer.putLong(0, x)
@@ -43,5 +41,25 @@ object ByteUtils {
         buffer.put(bytes, 0, bytes.size)
         buffer.flip()//need flip
         return buffer.short
+    }
+
+    fun bytesToLongList(bytes: ByteArray): MutableList<Long> {
+        val list = mutableListOf<Byte>()
+        for (element in bytes)
+            list.add(element)
+        val listBytesArrays = list.chunked(Long.SIZE_BYTES)
+        val listLong: MutableList<Long> = mutableListOf()
+        for (array in listBytesArrays) {
+            var byte = array.toByteArray()
+            if (byte.size < Long.SIZE_BYTES) {
+                val temp = ByteArray(Long.SIZE_BYTES)
+                for (b in 0 until Long.SIZE_BYTES) {
+                    temp[b] = byte.getOrNull(b) ?: 0
+                }
+                byte = temp
+            }
+            listLong.add(bytesToLong(byte))
+        }
+        return listLong
     }
 }

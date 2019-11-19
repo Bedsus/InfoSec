@@ -27,4 +27,9 @@ object FileUtils {
         }
         FileOutputStream("src/res/$name").use { stream -> stream.write(bytes) }
     }
+
+    fun imageToLongList(name: String): MutableList<Long> {
+        val bytes = fileToByteArray(name)
+        return ByteUtils.bytesToLongList(bytes)
+    }
 }

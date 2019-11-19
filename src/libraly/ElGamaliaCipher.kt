@@ -16,7 +16,7 @@ import utils.RandomUtils
  * [y] открытый ключ
  */
 @ExperimentalUnsignedTypes
-class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSignature<Byte, ElGamaliaHashData> {
+class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSignature<ElGamaliaHashData> {
 
     private val library = CryptographicLibrary()
     private var p = 0L
@@ -65,8 +65,15 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
         return library.pows(a, p - 1L - x, p, b)
     }
 
-    override fun sign(m: Byte): ElGamaliaHashData {
-        val h = HashUtils.sha256Int(m)
+    override fun signByte(m: Byte, h: Long): ElGamaliaHashData {
+        return signLong(m.toLong(), h)
+    }
+
+    override fun verifyByte(data: ElGamaliaHashData, h: Long): Boolean {
+       return verifyLong(data, h)
+    }
+
+    override fun signLong(m: Long, h: Long): ElGamaliaHashData {
         check(h in 1 until p) {
             "Сообщение должно быть меньше чем [message = $h, p = $p]"
         }
@@ -80,16 +87,15 @@ class ElGamaliaCipher : EncryptionCipher<Long, Pair<Long, Long>>, ElectronicSign
         if (u < 1)
             u += p - 1
         val s = (kInv * u) % (p - 1)
-        return ElGamaliaHashData(m, r, s, y, p, g)
+        return ElGamaliaHashData(m.toLong(), r, s, y, p, g)
     }
 
-    override fun verify(data: ElGamaliaHashData): Boolean {
+    override fun verifyLong(data: ElGamaliaHashData, h: Long): Boolean {
         data.apply {
-            val h = HashUtils.sha256Int(m)
             val x1 = library.pows(y, r, p)
             val x2 = library.pows(r, s, p)
             val x3 = (x1 * x2) % p
-            val x4 = library.pows(g, h.toLong(), p)
+            val x4 = library.pows(g, h, p)
             return x3 == x4
         }
     }

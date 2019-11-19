@@ -8,11 +8,11 @@ import utils.HashUtils
 import utils.RandomUtils
 
 @ExperimentalUnsignedTypes
-class RsaCipher : EncryptionCipher<Long, Long>, ElectronicSignature<Byte, RsaHashData> {
+class RsaCipher : EncryptionCipher<Long, Long>, ElectronicSignature<RsaHashData> {
 
     private val library = CryptographicLibrary()
-    var publicKey: Pair<Long, Long> = Pair(3L, 9173503L)
-    var privateKey: Pair<Long, Long> = Pair(6111579L, 9173503L)
+    private var publicKey: Pair<Long, Long> = Pair(3L, 9173503L)
+    private var privateKey: Pair<Long, Long> = Pair(6111579L, 9173503L)
 
     override val name = "Шифр RSA"
 
@@ -33,9 +33,7 @@ class RsaCipher : EncryptionCipher<Long, Long>, ElectronicSignature<Byte, RsaHas
         privateKey = Pair(d, n)
     }
 
-    override fun checkRule() {
-
-    }
+    override fun checkRule() { }
 
     override fun encrypt(m: Long): Long {
         val (e, n) = publicKey
@@ -47,19 +45,24 @@ class RsaCipher : EncryptionCipher<Long, Long>, ElectronicSignature<Byte, RsaHas
         return library.pows(m, d, n)
     }
 
-    override fun sign(m: Byte): RsaHashData {
+    override fun signByte(m: Byte, h: Long): RsaHashData {
+        return signLong(m.toLong(), h)
+    }
+
+    override fun verifyByte(data: RsaHashData, h: Long): Boolean {
+        return verifyLong(data, h)
+    }
+
+    override fun signLong(m: Long, h: Long): RsaHashData {
         val (c, n) = privateKey
-        val h = HashUtils.sha256(m)
-        val s = library.pows(h.toLong(), c, n)
+        val s = library.pows(h, c, n)
         return RsaHashData(m, s)
     }
 
-    override fun verify(data: RsaHashData): Boolean {
+    override fun verifyLong(data: RsaHashData, h: Long): Boolean {
         val (d, n) = publicKey
-        val m = data.m
         val s = data.s
-        val h = HashUtils.sha256(m)
-        val e = library.pows(s, d, n).toByte()
+        val e = library.pows(s, d, n)
         return e == h
     }
 }

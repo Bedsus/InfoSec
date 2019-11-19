@@ -7,7 +7,7 @@ import utils.HashUtils
 import utils.RandomUtils
 
 @ExperimentalUnsignedTypes
-class GostElectronicSignature : ElectronicSignature<Byte, GostHashData> {
+class GostElectronicSignature : ElectronicSignature<GostHashData> {
 
     override val name = "ГОСТ Р34.10-9"
     private val library = CryptographicLibrary()
@@ -34,9 +34,15 @@ class GostElectronicSignature : ElectronicSignature<Byte, GostHashData> {
         check( library.pows(a, q, p) == 1L) { "Нарушено условие: a^q mod p = 1" }
     }
 
+    override fun signByte(m: Byte, h: Long): GostHashData {
+        return signLong(m.toLong(), h)
+    }
 
-    override fun sign(m: Byte): GostHashData {
-        val h = HashUtils.sha256Int(m)
+    override fun verifyByte(data: GostHashData, h: Long): Boolean {
+        return verifyLong(data, h)
+    }
+
+    override fun signLong(m: Long, h: Long): GostHashData {
         check(h in 1 until q) {
             "Сообщение должно быть меньше чем [message = $h, p = $p]"
         }
@@ -51,16 +57,15 @@ class GostElectronicSignature : ElectronicSignature<Byte, GostHashData> {
         return GostHashData(m, r , s)
     }
 
-    override fun verify(data: GostHashData): Boolean {
+    override fun verifyLong(data: GostHashData, h: Long): Boolean {
         data.apply {
-            val h = HashUtils.sha256Int(m)
             check(r in 1 until q) {
                 "0 < r = $r < q = $q"
             }
             check(s in 1 until q) {
                 "0 < r = $s < q = $q"
             }
-            val eucl = library.extendedEuclidean(h.toLong(), q)
+            val eucl = library.extendedEuclidean(h, q)
             var hInv = eucl.y
             if (hInv < 1) hInv += p - 1
             val u1 = (s * hInv) % q

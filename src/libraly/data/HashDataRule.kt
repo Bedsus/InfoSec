@@ -1,5 +1,5 @@
 package libraly.data
 
 interface HashDataRule {
-    val m: Byte
+    val m: Long
 }
