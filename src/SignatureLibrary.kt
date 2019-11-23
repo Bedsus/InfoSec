@@ -1,18 +1,21 @@
 import libraly.contract.ElectronicSignature
 import libraly.data.HashDataRule
 import utils.HashUtils
+import java.io.FileOutputStream
 
 class SignatureLibrary<T : HashDataRule>(
         private val cipher: ElectronicSignature<T>
 ) {
 
-    fun singAllMessage(messages: List<Byte>): List<T> {
+    fun singAllMessage(messages: ByteArray): List<T> {
         println(cipher.name)
         println("Генерируем значения..")
         cipher.generate()
         println("Проверяем сгенерированные значения..")
         cipher.checkRule()
         println("Начинаем подпись ключей..")
+        val hash = HashUtils.sha256digest(messages)
+        FileOutputStream("src/res/RSA.txt").use { stream -> stream.write(hash) }
         return messages.map {
             cipher.signByte(it, HashUtils.sha256(it))
         }

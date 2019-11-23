@@ -3,7 +3,6 @@ package libraly
 import CryptographicLibrary
 import libraly.contract.ElectronicSignature
 import libraly.data.GostHashData
-import utils.HashUtils
 import utils.RandomUtils
 
 @ExperimentalUnsignedTypes
@@ -19,7 +18,7 @@ class GostElectronicSignature : ElectronicSignature<GostHashData> {
     private var y = 0L
 
     override fun generate() {
-        val (pInt, qInt) = RandomUtils.getPQ()
+        val (pInt, qInt) = RandomUtils.getPQShort()
         p = pInt.toLong()
         q = qInt.toLong()
         val g = RandomUtils.getNumber()

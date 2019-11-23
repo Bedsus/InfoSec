@@ -17,7 +17,7 @@ object HashUtils {
         return ByteUtils.bytesToLongList(bytesHash)[0]
     }
 
-    private fun sha256digest(bytes: ByteArray): ByteArray {
+    fun sha256digest(bytes: ByteArray): ByteArray {
         return MessageDigest.getInstance("SHA-256")
                 .digest(bytes)
     }

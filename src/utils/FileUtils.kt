@@ -13,6 +13,15 @@ object FileUtils {
         return list
     }
 
+    fun fileToByteList(name: String): List<Byte> {
+        println("Считываем файл..")
+        val file = File("src/res/$name")
+        val list = mutableListOf<Byte>()
+        for(element in Files.readAllBytes(file.toPath()))
+            list.add(element)
+        return list
+    }
+
     fun fileToByteArray(name: String): ByteArray {
         println("Считываем файл..")
         val file = File("src/res/$name")

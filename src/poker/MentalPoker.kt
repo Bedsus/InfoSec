@@ -38,7 +38,7 @@ class MentalPoker {
             player.encryptDeck(acc)
         }
         // расчитываем количество карт на одного игрока
-        val countCartToPlayer: Int = (countCart - COUNT_CART_ON_TABLE) / countPlayer
+        val countCartToPlayer: Int = 2
         // все игроки берут свои карты
         val remainingDeck = playerList.fold(encryptDecks) { acc, player ->
             player.getEncryptCart(acc, countCartToPlayer)

@@ -7,7 +7,7 @@ import kotlin.random.Random
 object RandomUtils {
 
     private val library = CryptographicLibrary()
-    private const val MAX_RANDOM_RANGE = 1000000000 //10 ^ 9
+    private const val MAX_RANDOM_RANGE = 32000 //10 ^ 9
     const val MIN_RANDOM_RANGE = 1
 
     /** Рандомное число до 10^9 */
@@ -89,6 +89,20 @@ object RandomUtils {
             p = randomPrimeNumber
             q = (p - 1) / 2
         } while (!library.isPrime(q))
+        return Pair(p, q)
+    }
+
+    /**
+     * P = 2Q - 1
+     * P, Q - простые числа
+     */
+    fun getPQShort(): Pair<Int, Short> {
+        var p: Int
+        var q: Short
+        do {
+            p = randomPrimeNumber
+            q = ((p - 1) / 2).toShort()
+        } while (!library.isPrime(q.toInt()))
         return Pair(p, q)
     }
 }
