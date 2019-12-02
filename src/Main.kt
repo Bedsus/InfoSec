@@ -1,5 +1,5 @@
 
-import poker.MentalPoker
+import anonimys.ReceptionOfVotes
 
 @ExperimentalUnsignedTypes
 fun main() {
@@ -19,5 +19,6 @@ fun main() {
       library.verifyAllMessage(encrypt)
   */
 
-    MentalPoker().distributionCards(10)
+    ReceptionOfVotes(10).holdVote()
+  //  MentalPoker().distributionCards(10)
 }

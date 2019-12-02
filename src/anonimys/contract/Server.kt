@@ -1,7 +1,8 @@
 package anonimys.contract
 
 interface Server {
-    fun giveBulletin(key: Long) : Long
-    fun pickBulletin(bulletin: Long)
-
+    val result: MutableList<Int>
+    val publicKey: Pair<Long, Long>
+    fun giveBulletin(id: Int, H: Long): Long
+    fun pickBulletin(n: Long, s: Long)
 }

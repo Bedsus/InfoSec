@@ -1,6 +1,8 @@
 package utils
 
+import com.google.common.hash.Hashing
 import java.security.MessageDigest
+
 
 object HashUtils {
 
@@ -20,5 +22,12 @@ object HashUtils {
     fun sha256digest(bytes: ByteArray): ByteArray {
         return MessageDigest.getInstance("SHA-256")
                 .digest(bytes)
+    }
+
+    fun sha(str: Long): Long {
+        return Hashing.sha512()
+                .hashLong(str)
+                .asLong()
+
     }
 }
