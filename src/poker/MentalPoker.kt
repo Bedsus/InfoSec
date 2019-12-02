@@ -11,8 +11,8 @@ class MentalPoker {
     private val deckNames = mutableListOf<String>()
 
     init {
-        suits.forEach { suit ->
-            typeCart.forEach { type -> deckNames.add("$type $suit") }
+        suits.forEach {
+            typeCart.forEach { type -> deckNames.add("$type $it") }
         }
     }
 
