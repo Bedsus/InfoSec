@@ -19,6 +19,6 @@ fun main() {
       library.verifyAllMessage(encrypt)
   */
 
-    ReceptionOfVotes(10).holdVote()
+    ReceptionOfVotes(60).holdVote()
   //  MentalPoker().distributionCards(10)
 }

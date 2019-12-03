@@ -47,14 +47,13 @@ class ServerImpl : Server {
         result.add(vote)
     }
 
-    override fun showResult() {
-        val resText = result.map {
-            when(it){
+    override fun showResult(): List<String> {
+        return result.map {
+            when (it) {
                 1 -> "Да"
                 2 -> "Нет"
                 else -> "Воздержался"
             }
         }
-        print(resText)
     }
 }
