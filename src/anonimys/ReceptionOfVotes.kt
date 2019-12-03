@@ -21,7 +21,7 @@ class ReceptionOfVotes(countClient: Int) {
 
     fun holdVote() {
         clients.forEach { it.toVote() }
-        println(server.result)
+        server.showResult()
     }
 
 }

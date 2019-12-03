@@ -8,7 +8,7 @@ import utils.RandomUtils
 @ExperimentalUnsignedTypes
 class ServerImpl : Server {
 
-    override val result = mutableListOf<Int>()
+    private val result = mutableListOf<Int>()
 
     /**
      * Список людей, которым уже выдали билютени
@@ -24,7 +24,8 @@ class ServerImpl : Server {
         val n = p * q // модуль
         val f = (p - 1L) * (q - 1L) // функция Эйлера
         val d = RandomUtils.getMutuallyPrime(f) // открытая экспонента, простая из чисел Ферма
-        val c = RandomUtils.getMultiplicativelyInverse(d, f) // Секретная экспонента
+        var c = library.extendedEuclidean(d, f).y
+        if (c < 0) c += f
         publicKey = Pair(d, n)
         privateKey = Pair(c, n)
     }
@@ -38,11 +39,22 @@ class ServerImpl : Server {
 
     override fun pickBulletin(n: Long, s: Long) {
         val (d, N) = publicKey
-        var h = HashUtils.sha256(n) % N
+        var h = HashUtils.sha(n) % N
         if (h < 0) h += N
         val verify = library.pows(s, d, N)
         check(h == verify) { "Билютеть не прошла проверку на корректность!" }
         val vote = (n % 10).toInt()
         result.add(vote)
+    }
+
+    override fun showResult() {
+        val resText = result.map {
+            when(it){
+                1 -> "Да"
+                2 -> "Нет"
+                else -> "Воздержался"
+            }
+        }
+        print(resText)
     }
 }
