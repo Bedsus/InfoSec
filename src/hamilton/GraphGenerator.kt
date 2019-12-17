@@ -1,17 +1,19 @@
 package hamilton
 
 import java.io.BufferedReader
+import java.io.File
 import java.io.FileReader
+import kotlin.random.Random
 
-class GraphReader {
+class GraphManager {
 
     fun readGraph(path: String): HamiltonGraph {
         val reader = BufferedReader(FileReader(path))
-        val edgeList = mutableListOf<Pair<Long, Long>>()
-        val hamiltonPath = mutableListOf<Long>()
+        val edgeList = mutableListOf<Pair<Int, Int>>()
+        val hamiltonPath = mutableListOf<Int>()
         var lineNumber = 1
         try {
-            var list: List<Long>? = reader.readEdge()
+            var list: List<Int>? = reader.readEdge()
             while (list != null && list.isNotEmpty()) {
                 when {
                    list.size == 2 -> edgeList.add(Pair(list[0], list[1]))
@@ -24,14 +26,59 @@ class GraphReader {
         } catch (ex: Exception) {
             throw IllegalStateException("Ошибка чтения графа! ($lineNumber) ${ex.localizedMessage}")
         }
-        return HamiltonGraph(edgeList, hamiltonPath)
+        return HamiltonGraph(edgeList, hamiltonPath).apply { show() }
     }
 
-    private fun BufferedReader.readEdge(): List<Long>? {
+    fun generateGraph(countNodes: Int): HamiltonGraph {
+        print("Генерация..")
+        var nodes: List<Int> = (1..countNodes).shuffled()
+        val hamiltonPath = nodes
+        var edgeList = mutableListOf<Pair<Int, Int>>()
+        for (i in 0 until countNodes - 1) {
+            edgeList.add(Pair(nodes[i], nodes[i+1]))
+        }
+        val additionalNodesCount = Random.nextInt(1, countNodes- 1)
+        nodes = nodes.shuffled()
+        for (i in 0 until additionalNodesCount) {
+            edgeList.add(Pair(nodes[i], nodes[i+1]))
+        }
+        edgeList = edgeList.shuffled()
+                .toMutableList()
+        print("готово\n")
+        return HamiltonGraph(edgeList, hamiltonPath).apply { show() }
+    }
+
+    fun saveGraph(graph: HamiltonGraph, path: String) {
+        print("Создание файла..")
+        val buffer = File(path).bufferedWriter()
+        graph.apply {
+            edgeList.forEach { buffer.write("${it.first} ${it.second}\n") }
+            hamiltonPath.forEach { buffer.write("$it ") }
+        }
+        print("готово\n")
+    }
+
+    private fun BufferedReader.readEdge(): List<Int>? {
         return readLine()
                 ?.split(" ")
-                ?.map { it.toLong() }
+                ?.map { it.toInt() }
     }
 }
 
-class HamiltonGraph(val edgeList: List<Pair<Long, Long>>, val hamiltonPath: List<Long>)
+class HamiltonGraph(var edgeList: MutableList<Pair<Int, Int>>, val hamiltonPath: List<Int>) {
+
+    fun show() {
+        println("Вершин в графе G: ${hamiltonPath.size}")
+        println("Ребер в графе G: ${edgeList.size}")
+        println("Ребра графа G: $edgeList")
+        println("Гамильтонов путь G: $hamiltonPath")
+    }
+
+    /**
+     * Перестановка в графе
+     */
+    fun permutationGraph() {
+        edgeList = edgeList.shuffled()
+                .toMutableList()
+    }
+}

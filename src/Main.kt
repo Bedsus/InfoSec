@@ -1,7 +1,12 @@
-import hamilton.GraphReader
+import hamilton.GraphManager
 
 fun main() {
-    val graph = GraphReader().readGraph("src/hamilton/graphtest.txt")
-    println("Ребра графа: ${graph.edgeList}")
-    println("Гамильтонов путь: ${graph.hamiltonPath}")
+    val manager = GraphManager()
+    val path = "src/hamilton/graphtest.txt"
+    val countNodes = 100000
+    println("Чтение графа $path")
+    var graph = manager.readGraph(path)
+    println("Генерация графа $countNodes")
+    graph = manager.generateGraph(countNodes)
+    manager.saveGraph( graph = graph, path = "src/hamilton/graph.txt")
 }
