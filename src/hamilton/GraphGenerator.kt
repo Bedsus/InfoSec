@@ -19,13 +19,17 @@ class GraphManager {
                 when {
                    list.size == 2 -> edgeList.add(Pair(list[0], list[1]))
                    edgeList.isNotEmpty() -> hamiltonPath.addAll(list)
-                   else -> throw IllegalStateException("Ошибка чтения графа! ($lineNumber)")
+                   else -> throw IllegalStateException(
+                           "Ошибка чтения графа! ($lineNumber)"
+                   )
                 }
                 lineNumber++
                 list = reader.readEdge()
             }
         } catch (ex: Exception) {
-            throw IllegalStateException("Ошибка чтения графа! ($lineNumber) ${ex.localizedMessage}")
+            throw IllegalStateException(
+                "Ошибка чтения графа! ($lineNumber) ${ex.localizedMessage}"
+            )
         }
         return HamiltonGraph(edgeList, hamiltonPath).apply { show() }
     }
@@ -67,8 +71,10 @@ class GraphManager {
     }
 }
 
-class HamiltonGraph(var edgeList: MutableList<Pair<Int, Int>>, val hamiltonPath: List<Int>) {
-
+class HamiltonGraph(
+    var edgeList: MutableList<Pair<Int, Int>>,
+    val hamiltonPath: List<Int>
+) {
     fun show() {
         println("Вершин в графе G: ${hamiltonPath.size}")
         println("Ребер в графе G: ${edgeList.size}")
@@ -76,9 +82,6 @@ class HamiltonGraph(var edgeList: MutableList<Pair<Int, Int>>, val hamiltonPath:
         println("Гамильтонов путь G: $hamiltonPath")
     }
 
-    /**
-     * Перестановка в графе
-     */
     fun permutationGraph() {
         edgeList = edgeList.shuffled()
                 .toMutableList()
