@@ -8,6 +8,7 @@ import kotlin.random.Random
 class GraphManager {
 
     fun readGraph(path: String): HamiltonGraph {
+        println("Чтение графа $path")
         val reader = BufferedReader(FileReader(path))
         val edgeList = mutableListOf<Pair<Int, Int>>()
         val hamiltonPath = mutableListOf<Int>()
@@ -30,7 +31,7 @@ class GraphManager {
     }
 
     fun generateGraph(countNodes: Int): HamiltonGraph {
-        print("Генерация..")
+        print("Генерация графа $countNodes .. ")
         var nodes: List<Int> = (1..countNodes).shuffled()
         val hamiltonPath = nodes
         var edgeList = mutableListOf<Pair<Int, Int>>()
@@ -49,12 +50,13 @@ class GraphManager {
     }
 
     fun saveGraph(graph: HamiltonGraph, path: String) {
-        print("Создание файла..")
+        print("Создание файла $path .. ")
         val buffer = File(path).bufferedWriter()
         graph.apply {
             edgeList.forEach { buffer.write("${it.first} ${it.second}\n") }
             hamiltonPath.forEach { buffer.write("$it ") }
         }
+        buffer.close()
         print("готово\n")
     }
 
@@ -80,5 +82,9 @@ class HamiltonGraph(var edgeList: MutableList<Pair<Int, Int>>, val hamiltonPath:
     fun permutationGraph() {
         edgeList = edgeList.shuffled()
                 .toMutableList()
+        println("Вершин в графе H: ${hamiltonPath.size}")
+        println("Ребер в графе H: ${edgeList.size}")
+        println("Ребра графа H: $edgeList")
+        println("Гамильтонов путь H: $hamiltonPath")
     }
 }
