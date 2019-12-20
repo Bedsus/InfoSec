@@ -31,11 +31,11 @@ class GraphManager {
                 "Ошибка чтения графа! ($lineNumber) ${ex.localizedMessage}"
             )
         }
-        return HamiltonGraph(edgeList, hamiltonPath).apply { show() }
+        return HamiltonGraph(edgeList, hamiltonPath).apply { showH() }
     }
 
     fun generateGraph(countNodes: Int): HamiltonGraph {
-        print("Генерация графа $countNodes .. ")
+        print("${violetColor}Генерация графа $countNodes .. $whiteColor")
         var nodes: List<Int> = (1..countNodes).shuffled()
         val hamiltonPath = nodes
         var edgeList = mutableListOf<Pair<Int, Int>>()
@@ -49,19 +49,19 @@ class GraphManager {
         }
         edgeList = edgeList.shuffled()
                 .toMutableList()
-        print("готово\n")
-        return HamiltonGraph(edgeList, hamiltonPath).apply { show() }
+        print("${violetColor}готово$whiteColor\n")
+        return HamiltonGraph(edgeList, hamiltonPath).apply { showH() }
     }
 
     fun saveGraph(graph: HamiltonGraph, path: String) {
-        print("Создание файла $path .. ")
+        print("${violetColor}Создание файла $path .. $whiteColor")
         val buffer = File(path).bufferedWriter()
         graph.apply {
             edgeList.forEach { buffer.write("${it.first} ${it.second}\n") }
             hamiltonPath.forEach { buffer.write("$it ") }
         }
         buffer.close()
-        print("готово\n")
+        print("${violetColor}готово$whiteColor\n")
     }
 
     private fun BufferedReader.readEdge(): List<Int>? {
@@ -75,14 +75,16 @@ class HamiltonGraph(
     var edgeList: MutableList<Pair<Int, Int>>,
     val hamiltonPath: List<Int>
 ) {
-    fun show() {
+    fun show1() {
+        println("\nКаков гамильтонов цикл для графа H?\n")
         println("Вершин в графе G: ${hamiltonPath.size}")
         println("Ребер в графе G: ${edgeList.size}")
         println("Ребра графа G: $edgeList")
         println("Гамильтонов путь G: $hamiltonPath")
     }
 
-    fun permutationGraph() {
+    fun permutationGraph1() {
+        println("\nДействительно ли граф H изоморфен G?\n")
         edgeList = edgeList.shuffled()
                 .toMutableList()
         println("Вершин в графе H: ${hamiltonPath.size}")
@@ -90,4 +92,30 @@ class HamiltonGraph(
         println("Ребра графа H: $edgeList")
         println("Гамильтонов путь H: $hamiltonPath")
     }
+
+    fun showH() {
+        println("\n${violetColor}Каков гамильтонов цикл для графа H?$whiteColor\n")
+        show("G")
+    }
+
+
+    fun permutationGraphH() {
+        println("\n${violetColor}Действительно ли граф H изоморфен G?$whiteColor\n")
+        edgeList = edgeList.shuffled()
+                .toMutableList()
+        show("H")
+    }
+
+    private fun show(graph: String) {
+        println("${yellowColor}Вершин в графе $graph:$whiteColor ${hamiltonPath.size} " +
+                "Ребер в графе $graph: ${edgeList.size}")
+        println("${yellowColor}Ребра графа $graph:$whiteColor $edgeList")
+        println("${yellowColor}Гамильтонов путь $graph:$whiteColor ${
+        hamiltonPath.map{ it.toString() }.reduce { i, j -> "$i -> $j" }}"
+        )
+    }
 }
+
+val whiteColor = 27.toChar() + "[30m"
+val violetColor = 27.toChar() + "[35m"
+val yellowColor = 27.toChar() + "[32m"
